@@ -6,135 +6,119 @@
 class LecturerModel
 {
 	/**
-	 * @var int
+	 * Private variables
 	 */
-	private static $counter = 0;
+
+	private $id, $title, $surname, $name, $birthday;
 
 	/**
-	 * @param Lecturer $o
+	 * Getter/Setter
 	 */
-	public static function saveLecturer(Lecturer $o)
+
+	public function getId()
 	{
-		if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
-			$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'a') or die ('Failed!');
+		return $this->id;
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	public function getBirthday()
+	{
+		return $this->birthday;
+	}
+
+	public function setBirthday($birthday)
+	{
+		$this->birthday = $birthday;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
+	public function getSurname()
+	{
+		return $this->surname;
+	}
+
+	public function setSurname($surname)
+	{
+		$this->surname = $surname;
+	}
+
+	/**
+	 * Constructor
+	 * @param $title
+	 * @param $surname
+	 * @param $name
+	 * @param $birthday
+	 * @param int $id
+	 * @param bool $save
+	 */
+
+	public function __construct($title, $surname, $name, $birthday, $id = 0, $save = false)
+	{
+		$this->title = $title;
+		$this->name = $name;
+		$this->surname = $surname;
+		$this->birthday = $birthday;
+
+		if ($save) {
+			Database::getInstance()->save($this);
 		} else {
-			$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'w') or die ('Failed!');
-			fputcsv($fh, array('id', 'title', 'surname', 'name', 'birthday'));
+			$this->id = $id;
 		}
-
-		fputcsv($fh, self::toArray($o));
-
-		fclose($fh);
-
-		self::$counter++;
 	}
 
-	/**
-	 * @param $id
-	 * @return null
-	 */
-	public static function getLecturerById($id)
+	public function getWorkload()
 	{
-		$lecturerArray = self::getAllLecturer();
+		$workload = 0;
+		$courses = Database::getInstance()->getAllBy($this,'Course','current');
 
-		foreach ($lecturerArray as $lecturer) {
-			if (intval($lecturer->getId()) === $id) {
-				return $lecturer;
-			}
+		foreach ($courses as $course) {
+			$workload += $course->getEcts();
 		}
 
-		return null;
+		return $workload * 5;
 	}
 
-	/**
-	 * @param Lecturer $lecturer
-	 */
-	public static function updateLecturer(Lecturer $lecturer)
+	public function addPreviousCourse(Course $course)
 	{
-		$lecturerArray = self::getAllLecturer();
-
-		for ($i = 0; $i < count($lecturerArray); $i++) {
-			if ($lecturerArray[$i]->getId() === $lecturer->getId()) {
-				$lecturerArray[$i] = $lecturer;
-				break;
-			}
-		}
-
-		$fh = fopen(ROOT_PATH . "/data/lecturer.txt", "w");
-
-		fputcsv($fh, array('id', 'title', 'surname', 'name', 'birthday'));
-		foreach ($lecturerArray as $lecturer) {
-			fputcsv($fh, self::toArray($lecturer));
-		}
-
-		fclose($fh);
+		Database::getInstance()->add($this, $course, 'previous');
 	}
 
-	/**
-	 * @return array
-	 */
-	public static function getAllLecturer()
+	public function getPreviousCourses()
 	{
-		$lecturerArray = array();
-		if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
-			$fh = fopen(ROOT_PATH . "/data/lecturer.txt", "r") or die ('Failed!');
-		} else {
-			new Error("lecturer file does not exist");
-			return $lecturerArray;
-		}
-
-		while (!feof($fh)) {
-			$a = fgetcsv($fh);
-
-			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null) {
-				array_push($lecturerArray, new Lecturer($a[1], $a[2], $a[3], $a[4], $a[0], false));
-			}
-		};
-
-		fclose($fh);
-
-		return $lecturerArray;
+		return Database::getInstance()->getAllBy($this,'Course','previous');
 	}
 
-	/**
-	 * @param Lecturer $l
-	 * @param Course $c
-	 */
-	public static function addPreviousCourse(Lecturer $l, Course $c)
+	public function addCurrentCourse(Course $course)
 	{
-		$fh = fopen(ROOT_PATH . "/data/lecturer_course_previous.txt", 'a') or die ('Failed!');
-
-		fwrite($fh, $l->getId() . "," . $c->getId() . "\n");
-
-		fclose($fh);
+		Database::getInstance()->add($this, $course, 'current');
 	}
 
-	/**
-	 * @param Lecturer $l
-	 * @param Course $c
-	 */
-	public static function addCurrentCourse(Lecturer $l, Course $c)
+	public function getCurrentCourses()
 	{
-		$fh = fopen(ROOT_PATH . "/data/lecturer_course_current.txt", 'a') or die ('Failed!');
-
-		fwrite($fh, $l->getId() . "," . $c->getId() . "\n");
-
-		fclose($fh);
-	}
-
-	/**
-	 * @param Lecturer $o
-	 * @return string
-	 */
-	private static function toArray(Lecturer $o)
-	{
-		if ($o->getId() === null) {
-			$id = self::$counter;
-		} else {
-			$id = $o->getId();
-		}
-
-		return array($id, $o->getTitle(), $o->getSurname(), $o->getName(), $o->getBirthday());
+		return Database::getInstance()->getAllBy($this,'Course','current');
 	}
 
 } 

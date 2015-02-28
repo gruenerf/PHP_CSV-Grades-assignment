@@ -37,46 +37,51 @@ class Database
 	 */
 	public function save($o)
 	{
-		switch (getQualifiedClassName($o)) {
-			case Course :
+		switch (get_class($o)) {
+			case 'CourseModel' :
 				if (file_exists(ROOT_PATH . "/data/course.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/course.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/course.txt", 'w') or die ('Failed!');
 					fputcsv($fh, array('id', 'name', 'ects', 'group', 'semester'));
 				}
+				break;
 
-			case Grade :
+			case 'GradeModel' :
 				if (file_exists(ROOT_PATH . "/data/grade.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/grade.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/grade.txt", 'w') or die ('Failed!');
 					fputcsv($fh, array('id', 'studentId', 'courseId', 'grade', 'year'));
 				}
+				break;
 
-			case Lecturer :
+			case 'LecturerModel' :
 				if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'w') or die ('Failed!');
 					fputcsv($fh, array('id', 'title', 'surname', 'name', 'birthday'));
 				}
+				break;
 
-			case Student :
+			case 'StudentModel' :
 				if (file_exists(ROOT_PATH . "/data/student.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/student.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/student.txt", 'w') or die ('Failed!');
 					fputcsv($fh, array('id', 'surname', 'name', 'birthday'));
 				}
+				break;
 
-			case Error :
+			case 'ErrorModel' :
 				if (file_exists(ROOT_PATH . "/data/errorlog.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'w') or die ('Failed!');
 					fputcsv($fh, array('date', 'message'));
 				}
+				break;
 		}
 
 		fputcsv($fh, $this->toArray($o));
@@ -93,7 +98,7 @@ class Database
 	 */
 	public function update($o)
 	{
-		$objectArray = self::getAll(getQualifiedClassName($o));
+		$objectArray = self::getAll(get_class($o));
 
 		for ($i = 0; $i < count($objectArray); $i++) {
 			if ($objectArray[$i]->getId() === $o->getId()) {
@@ -102,23 +107,27 @@ class Database
 			}
 		}
 
-		switch ($o) {
-			case Course :
+		switch (get_class($o)) {
+			case 'CourseModel' :
 				if (!unlink(ROOT_PATH . "/data/course.txt")) {
 					new ErrorModel("Error deleting course.txt");
 				}
-			case Grade :
+				break;
+			case 'GradeModel' :
 				if (!unlink(ROOT_PATH . "/data/grade.txt")) {
 					new ErrorModel("Error deleting grade.txt");
 				}
-			case Lecturer :
+				break;
+			case 'LecturerModel' :
 				if (!unlink(ROOT_PATH . "/data/lecturer.txt")) {
 					new ErrorModel("Error deleting lecturer.txt");
 				}
-			case Student :
+				break;
+			case 'StudentModel' :
 				if (!unlink(ROOT_PATH . "/data/student.txt")) {
 					new ErrorModel("Error deleting student.txt");
 				}
+				break;
 		}
 
 		foreach ($objectArray as $object) {
@@ -129,25 +138,30 @@ class Database
 	/**
 	 * Returns Object by Id
 	 *
-	 * @param String $type
-	 * @param int $id
+	 * @param $type
+	 * @param $id
 	 * @return null
 	 */
-	function getById(String $type, Integer $id)
+	function getById($type, $id)
 	{
+		$array = array();
 
 		switch ($type) {
-			case Course :
+			case 'CourseModel' :
 				$array = $this->getAll('Course');
+				break;
 
-			case Grade :
+			case 'GradeModel' :
 				$array = $this->getAll('Grade');
+				break;
 
-			case Lecturer :
+			case 'LecturerModel' :
 				$array = $this->getAll('Lecturer');
+				break;
 
-			case Student :
+			case 'StudentModel' :
 				$array = $this->getAll('Student');
+				break;
 		}
 
 		foreach ($array as $object) {
@@ -162,45 +176,49 @@ class Database
 	/**
 	 * Returns Array with all Objects of a certain Class
 	 *
-	 * @param String $s
+	 * @param $s
 	 * @return array
 	 */
-	function getAll(String $s)
+	function getAll($s)
 	{
 		$objectArray = array();
 
 		switch ($s) {
-			case Course :
+			case 'CourseModel' :
 				if (file_exists(ROOT_PATH . "/data/course.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/course.txt", "r") or die ('Failed!');
 				} else {
-					new ErrorModel("course file does not exist");
+					new ErrorModel("course.txt does not exist");
 					return $objectArray;
 				}
+				break;
 
-			case Grade :
+			case 'GradeModel' :
 				if (file_exists(ROOT_PATH . "/data/grade.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/grade.txt", "r") or die ('Failed!');
 				} else {
-					new ErrorModel("grade file does not exist");
+					new ErrorModel("grade.txt does not exist");
 					return $objectArray;
 				}
+				break;
 
-			case Lecturer :
+			case 'LecturerModel' :
 				if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/lecturer.txt", "r") or die ('Failed!');
 				} else {
-					new ErrorModel("lecturer file does not exist");
+					new ErrorModel("lecturer.txt does not exist");
 					return $objectArray;
 				}
+				break;
 
-			case Student :
+			case 'StudentModel' :
 				if (file_exists(ROOT_PATH . "/data/student.txt")) {
 					$fh = fopen(ROOT_PATH . "/data/student.txt", "r") or die ('Failed!');
 				} else {
-					new ErrorModel("student file does not exist");
+					new ErrorModel("student.txt does not exist");
 					return $objectArray;
 				}
+				break;
 		}
 
 
@@ -210,17 +228,21 @@ class Database
 			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null) {
 
 				switch ($s) {
-					case Course :
-						array_push($objectArray, new Course($a[1], $a[2], $a[3], $a[4], $a[0], false));
+					case 'CourseModel' :
+						array_push($objectArray, new CourseModel($a[1], $a[2], $a[3], $a[4], $a[0], false));
+						break;
 
-					case Grade :
-						array_push($objectArray, new Grade($a[1], $a[2], $a[3], $a[4], $a[0], false));
+					case 'GradeModel' :
+						array_push($objectArray, new GradeModel($a[1], $a[2], $a[3], $a[4], $a[0], false));
+						break;
 
-					case Lecturer :
-						array_push($objectArray, new Lecturer($a[1], $a[2], $a[3], $a[4], $a[0], false));
+					case 'LecturerModel' :
+						array_push($objectArray, new LecturerModel($a[1], $a[2], $a[3], $a[4], $a[0], false));
+						break;
 
-					case Student :
-						array_push($objectArray, new Student($a[1], $a[2], $a[3], $a[0], false));
+					case 'StudentModel' :
+						array_push($objectArray, new StudentModel($a[1], $a[2], $a[3], $a[0], false));
+						break;
 				}
 			}
 		};
@@ -233,53 +255,54 @@ class Database
 	/**
 	 * Returns Array of related objects
 	 *
-	 * @param Object $o
-	 * @param String $class -> get all Objects of $class that have a relation to $o
-	 * @param String $time -> previous/current optional
+	 * @param $o
+	 * @param $class -> get all Objects of $class that have a relation to $o
+	 * @param $time -> previous/current optional
 	 * @return array
 	 */
-	function getAllBy($o, String $class, String $time = '')
+	function getAllBy($o, $class, $time = '')
 	{
 		$objectArray = array();
 
-		switch (getQualifiedClassName($o)) {
-			case Course :
+		switch (get_class($o)) {
 
-			case Student :
+			case 'StudentModel' :
 				if ($class == 'Grade') {
 					if (file_exists(ROOT_PATH . "/data/grade.txt")) {
 						$fh = fopen(ROOT_PATH . "/data/grade.txt", "w");
 					} else {
-						new Error("grade file does not exist");
+						new ErrorModel("grade.txt does not exist");
 						return $objectArray;
 					}
 				} elseif ($class == 'Course') {
 					if (file_exists(ROOT_PATH . "/data/student_course.txt")) {
 						$fh = fopen(ROOT_PATH . "/data/student_course.txt", "r");
 					} else {
-						new Error("student_course file does not exist");
+						new ErrorModel("student_course.txt does not exist");
 						return $objectArray;
 					}
 				}
+				break;
 
-			case Lecturer:
+			case 'LecturerModel':
 				if ($class == 'Course') {
 					if ($time == 'current') {
 						if (file_exists(ROOT_PATH . "/data/lecturer_course_current.txt")) {
 							$fh = fopen(ROOT_PATH . "/data/lecturer_course_current.txt", "r");
 						} else {
-							new Error("lecturer_course_current file does not exist");
+							new ErrorModel("lecturer_course_current.txt does not exist");
 							return $objectArray;
 						}
 					} elseif ($time == 'previous') {
 						if (file_exists(ROOT_PATH . "/data/lecturer_course_previous.txt")) {
 							$fh = fopen(ROOT_PATH . "/data/lecturer_course_previous.txt", "r");
 						} else {
-							new Error("lecturer_course_previous file does not exist");
+							new ErrorModel("lecturer_course_previous.txt does not exist");
 							return $objectArray;
 						}
 					}
 				}
+				break;
 		}
 
 		while (!feof($fh)) {
@@ -299,9 +322,9 @@ class Database
 	 * Adds Object $o2 to Object $o1
 	 * @param $o
 	 * @param $o2
-	 * @param String $time -> previous/current optional
+	 * @param $time -> previous/current optional
 	 */
-	function add($o, $o2, String $time = '')
+	function add($o, $o2, $time = '')
 	{
 		if ($o instanceof LecturerModel) {
 			if ($time == 'previous') {
@@ -331,22 +354,23 @@ class Database
 			$id = $o->getId();
 		}
 
-		switch (getQualifiedClassName($o)) {
-			case Course :
+		switch (get_class($o)) {
+			case 'CourseModel' :
 				return array($id, $o->getName(), $o->getEcts(), $o->getGroup(), $o->getSemester());
 
-			case Grade :
+			case 'GradeModel' :
 				return array($id, $o->getStudentId(), $o->getCourseId(), $o->getGrade(), $o->getYear());
 
-			case Lecturer :
+			case 'LecturerModel' :
 				return array($id, $o->getTitle(), $o->getSurname(), $o->getName(), $o->getBirthday());
 
-			case Student :
+			case 'StudentModel' :
 				return array($id, $o->getSurname(), $o->getName(), $o->getBirthday());
 
-			case Error :
+			case 'ErrorModel' :
 				return array($id, $o->getDate(), $o->getErrorMessage());
 		}
 
+		return null;
 	}
 }
