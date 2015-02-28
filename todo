@@ -1,0 +1,4 @@
+Finish errorlog
+Make models singleton
+check for controller purpose -> make it as a layer to access models...
+make first output
