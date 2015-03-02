@@ -60,9 +60,9 @@ class GradeModel
 		return $this->studentId;
 	}
 
-	public function setStudent($student)
+	public function setStudentId($studentId)
 	{
-		$this->studentId = $student;
+		$this->studentId = $studentId;
 	}
 
 	/**
@@ -74,15 +74,15 @@ class GradeModel
 	 * @param bool $save
 	 */
 
-	public function __construct($student, $course, $grade, $year, $id = 0, $save = false)
+	public function __construct($studentId, $courseId, $grade, $year, $id = 0, $save = true)
 	{
-		$this->studentId = $student;
-		$this->courseId = $course;
+		$this->studentId = $studentId;
+		$this->courseId = $courseId;
 		$this->grade = $grade;
 		$this->year = $year;
 
 		if ($save) {
-			Database::getInstance()->save(saveGrade($this));
+			$this->id = Database::getInstance()->save($this);
 		} else {
 			$this->id = $id;
 		}

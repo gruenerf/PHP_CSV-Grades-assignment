@@ -1,0 +1,6 @@
+id,name,ects,group,semester
+0,AI,10,A,6
+1,Norsk,8,none,1
+2,"Mobile App Design",5,none,2
+3,"Programming for the Web",10,none,3
+4,"Programming for the Web II",10,none,4

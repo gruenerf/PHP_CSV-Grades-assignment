@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * TODO:
+ * Make gpa calculation with check for amount of courses taken
+ */
+
+/**
  * Class StudentModel
  */
 class StudentModel
@@ -9,11 +14,13 @@ class StudentModel
 	 * Private variables
 	 */
 
-	private $id, $surname, $name, $birthday;
+	private $id, $surname, $name, $birthday, $workload, $gpa;
+
 
 	/**
 	 * Getters/Setters
 	 */
+
 
 	public function getId()
 	{
@@ -55,6 +62,26 @@ class StudentModel
 		$this->surname = $surname;
 	}
 
+	public function getGPA()
+	{
+		return $this->gpa;
+	}
+
+	public function setGPA($gpa)
+	{
+		$this->gpa = $gpa;
+	}
+
+	public function getWorkload()
+	{
+		return $this->workload;
+	}
+
+	public function setWorkload($workload)
+	{
+		$this->workload = $workload;
+	}
+
 	/**
 	 * Constructor
 	 * @param $surname
@@ -63,14 +90,16 @@ class StudentModel
 	 * @param int $id
 	 * @param bool $save
 	 */
-	public function __construct($surname, $name, $birthday, $id = 0, $save = false)
+	public function __construct($surname, $name, $birthday, $workload = "undefined", $gpa = "undefined", $id = 0, $save = true)
 	{
 		$this->name = $name;
 		$this->surname = $surname;
 		$this->birthday = $birthday;
+		$this->workload = $workload;
+		$this->gpa = $gpa;
 
 		if ($save) {
-			Database::getInstance()->save($this);
+			$this->id = Database::getInstance()->save($this);
 		} else {
 			$this->id = $id;
 		}
@@ -79,7 +108,7 @@ class StudentModel
 	/**
 	 * @param Course $course
 	 */
-	public function addRegisteredCourse(Course $course)
+	public function addRegisteredCourse(CourseModel $course)
 	{
 		Database::getInstance()->add($this, $course);
 	}
@@ -87,8 +116,9 @@ class StudentModel
 	/**
 	 * @return array
 	 */
-	public function getCompletedCourses(){
-		return Database::getInstance()->getAllBy($this,'Grade');
+	public function getCompletedCourse()
+	{
+		return Database::getInstance()->getAllBy($this, 'Grade');
 	}
 
 	/**
@@ -96,14 +126,14 @@ class StudentModel
 	 */
 	public function getRegisteredCourse()
 	{
-		return Database::getInstance()->getAllBy($this,'Course');
+		return Database::getInstance()->getAllBy($this, 'Course');
 	}
 
 	/**
 	 * Returns Workload
 	 * @return int
 	 */
-	public function getWorkload()
+	public function calculateWorkload()
 	{
 		$workload = 0;
 		$courses = $this->getRegisteredCourse();
@@ -112,25 +142,42 @@ class StudentModel
 			$workload += $course->getEcts();
 		}
 
-		return $workload * 1.6;
+		$result = $workload * 1.6;
+
+		// Update Database
+		$this->setWorkload($result);
+		Database::getInstance()->update($this);
+
+		return $result;
 	}
 
 	/**
 	 * Returns GPA as float
 	 * @return float
 	 */
-	public function getGpa()
+	public function calculateGpa()
 	{
-		$gradeArray = $this->getCompletedCourses();
+		$gradeArray = $this->getCompletedCourse();
 		$ects_total = 0;
-		$gpa = 0;
+		$grade_weight = 0;
 
 		foreach ($gradeArray as $grade) {
-			$ects_total += $grade->getEcts();
-			$gpa += $grade->getEcts() * $this->transformGradeToInt($grade->getGrade());
+			$ects = Database::getInstance()->getById('Course', $grade->getCourseId())->getEcts();
+			$ects_total += $ects;
+			$grade_weight += $ects * $this->transformGradeToInt($grade->getGrade());
 		}
 
-		return $gpa / $ects_total;
+		if ($ects_total !== 0) {
+			$gpa = number_format($grade_weight / $ects_total, 1);
+
+			// Update Database
+			$this->setGPA($gpa);
+			Database::getInstance()->update($this);
+
+			return $gpa;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -138,7 +185,7 @@ class StudentModel
 	 * @param $grade
 	 * @return int
 	 */
-	public function transformGradeToInt($grade)
+	private function transformGradeToInt($grade)
 	{
 		switch ($grade) {
 			case 'A' :
@@ -160,11 +207,11 @@ class StudentModel
 
 	/**
 	 * Transfers GPA to String Representation of Status
-	 * @param $gpa
 	 * @return string
 	 */
-	private function status($gpa)
+	public function getStatus()
 	{
+		$gpa = $this->calculateGpa();
 		if ($gpa <= 1.99) {
 			return 'unsatisfactory';
 		} elseif (2 <= $gpa && $gpa <= 2.99) {
@@ -178,4 +225,4 @@ class StudentModel
 		return 'no status';
 	}
 
-} 
+}

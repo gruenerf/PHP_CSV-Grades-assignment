@@ -9,7 +9,7 @@ class LecturerModel
 	 * Private variables
 	 */
 
-	private $id, $title, $surname, $name, $birthday;
+	private $id, $title, $surname, $name, $birthday, $workload;
 
 	/**
 	 * Getter/Setter
@@ -65,31 +65,45 @@ class LecturerModel
 		$this->surname = $surname;
 	}
 
+	public function getWorkload()
+	{
+		return $this->workload;
+	}
+
+	public function setWorkload($workload)
+	{
+		$this->workload = $workload;
+	}
+
+
 	/**
 	 * Constructor
+	 *
 	 * @param $title
-	 * @param $surname
 	 * @param $name
+	 * @param $surname
 	 * @param $birthday
+	 * @param $workload
 	 * @param int $id
 	 * @param bool $save
 	 */
 
-	public function __construct($title, $surname, $name, $birthday, $id = 0, $save = false)
+	public function __construct($title, $name, $surname,  $birthday, $workload = "undefined", $id = 0, $save = true)
 	{
 		$this->title = $title;
-		$this->name = $name;
 		$this->surname = $surname;
+		$this->name = $name;
 		$this->birthday = $birthday;
+		$this->workload = $workload;
 
 		if ($save) {
-			Database::getInstance()->save($this);
+			$this->id = Database::getInstance()->save($this);
 		} else {
 			$this->id = $id;
 		}
 	}
 
-	public function getWorkload()
+	public function calculateWorkload()
 	{
 		$workload = 0;
 		$courses = Database::getInstance()->getAllBy($this,'Course','current');
@@ -98,25 +112,31 @@ class LecturerModel
 			$workload += $course->getEcts();
 		}
 
-		return $workload * 5;
+		$result = $workload * 5;
+
+		// Update Database
+		$this->setWorkload($result);
+		Database::getInstance()->update($this);
+
+		return $result;
 	}
 
-	public function addPreviousCourse(Course $course)
+	public function addPreviousCourse(CourseModel $course)
 	{
 		Database::getInstance()->add($this, $course, 'previous');
 	}
 
-	public function getPreviousCourses()
+	public function getPreviousCourse()
 	{
 		return Database::getInstance()->getAllBy($this,'Course','previous');
 	}
 
-	public function addCurrentCourse(Course $course)
+	public function addCurrentCourse(CourseModel $course)
 	{
 		Database::getInstance()->add($this, $course, 'current');
 	}
 
-	public function getCurrentCourses()
+	public function getCurrentCourse()
 	{
 		return Database::getInstance()->getAllBy($this,'Course','current');
 	}

@@ -6,6 +6,8 @@
  * Does:
  * Save
  * Update
+ * Get
+ * Add
  */
 class Database
 {
@@ -13,7 +15,7 @@ class Database
 	private static $db = null;
 
 	// static counter for ids
-	private static $counter;
+	private static $counter = 0;
 
 	// Empty constructor for singleton
 	public function __construct()
@@ -61,7 +63,7 @@ class Database
 					$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'w') or die ('Failed!');
-					fputcsv($fh, array('id', 'title', 'surname', 'name', 'birthday'));
+					fputcsv($fh, array('id', 'title', 'name', 'surname', 'birthday', 'workload'));
 				}
 				break;
 
@@ -70,7 +72,7 @@ class Database
 					$fh = fopen(ROOT_PATH . "/data/student.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/student.txt", 'w') or die ('Failed!');
-					fputcsv($fh, array('id', 'surname', 'name', 'birthday'));
+					fputcsv($fh, array('id', 'name', 'surname', 'birthday', 'workload', 'gpa'));
 				}
 				break;
 
@@ -79,7 +81,7 @@ class Database
 					$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'a') or die ('Failed!');
 				} else {
 					$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'w') or die ('Failed!');
-					fputcsv($fh, array('date', 'message'));
+					fputcsv($fh, array('id', 'date', 'message'));
 				}
 				break;
 		}
@@ -88,7 +90,7 @@ class Database
 
 		fclose($fh);
 
-		self::$counter++;
+		return self::$counter++;
 	}
 
 	/**
@@ -101,7 +103,7 @@ class Database
 		$objectArray = self::getAll(get_class($o));
 
 		for ($i = 0; $i < count($objectArray); $i++) {
-			if ($objectArray[$i]->getId() === $o->getId()) {
+			if ($objectArray[$i]->getId() == $o->getId()) {
 				$objectArray[$i] = $o;
 				break;
 			}
@@ -142,30 +144,30 @@ class Database
 	 * @param $id
 	 * @return null
 	 */
-	function getById($type, $id)
+	public function getById($type, $id)
 	{
 		$array = array();
 
 		switch ($type) {
-			case 'CourseModel' :
-				$array = $this->getAll('Course');
+			case 'Course' :
+				$array = $this->getAll('CourseModel');
 				break;
 
-			case 'GradeModel' :
-				$array = $this->getAll('Grade');
+			case 'Grade' :
+				$array = $this->getAll('GradeModel');
 				break;
 
-			case 'LecturerModel' :
-				$array = $this->getAll('Lecturer');
+			case 'Lecturer' :
+				$array = $this->getAll('LecturerModel');
 				break;
 
-			case 'StudentModel' :
-				$array = $this->getAll('Student');
+			case 'Student' :
+				$array = $this->getAll('StudentModel');
 				break;
 		}
 
 		foreach ($array as $object) {
-			if (intval($object->getId()) === $id) {
+			if (intval($object->getId()) === intval($id)) {
 				return $object;
 			}
 		}
@@ -179,7 +181,7 @@ class Database
 	 * @param $s
 	 * @return array
 	 */
-	function getAll($s)
+	public function getAll($s)
 	{
 		$objectArray = array();
 
@@ -237,11 +239,11 @@ class Database
 						break;
 
 					case 'LecturerModel' :
-						array_push($objectArray, new LecturerModel($a[1], $a[2], $a[3], $a[4], $a[0], false));
+						array_push($objectArray, new LecturerModel($a[1], $a[2], $a[3], $a[4], $a[5], $a[0], false));
 						break;
 
 					case 'StudentModel' :
-						array_push($objectArray, new StudentModel($a[1], $a[2], $a[3], $a[0], false));
+						array_push($objectArray, new StudentModel($a[1], $a[2], $a[3], $a[4], $a[5], $a[0], false));
 						break;
 				}
 			}
@@ -256,7 +258,7 @@ class Database
 	 * Returns Array of related objects
 	 *
 	 * @param $o
-	 * @param $class -> get all Objects of $class that have a relation to $o
+	 * @param $class -> String get all Objects of $class that have a relation to $o
 	 * @param $time -> previous/current optional
 	 * @return array
 	 */
@@ -264,12 +266,18 @@ class Database
 	{
 		$objectArray = array();
 
+		// Index where object id is found in CSV. Typically 0.
+		$arrayIndex = 0;
+		$arrayIndex2 = 1;
+
 		switch (get_class($o)) {
 
 			case 'StudentModel' :
 				if ($class == 'Grade') {
 					if (file_exists(ROOT_PATH . "/data/grade.txt")) {
-						$fh = fopen(ROOT_PATH . "/data/grade.txt", "w");
+						$fh = fopen(ROOT_PATH . "/data/grade.txt", "r");
+						$arrayIndex = 1;
+						$arrayIndex2 = 0;
 					} else {
 						new ErrorModel("grade.txt does not exist");
 						return $objectArray;
@@ -308,8 +316,8 @@ class Database
 		while (!feof($fh)) {
 			$a = fgetcsv($fh);
 
-			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[0] == $o->getId()) {
-				array_push($objectArray, $this->getById($class, $a[1]));
+			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[$arrayIndex] == $o->getId()) {
+				array_push($objectArray, $this->getById($class, $a[$arrayIndex2]));
 			}
 		};
 
@@ -333,7 +341,7 @@ class Database
 				$fh = fopen(ROOT_PATH . "/data/lecturer_course_current.txt", 'a') or die ('Failed!');
 			}
 		} elseif ($o instanceof StudentModel) {
-			$fh = fopen(ROOT_PATH . "/data/student_course_registered.txt", 'a') or die ('Failed!');
+			$fh = fopen(ROOT_PATH . "/data/student_course.txt", 'a') or die ('Failed!');
 		}
 
 		fwrite($fh, $o->getId() . "," . $o2->getId() . "\n");
@@ -362,13 +370,13 @@ class Database
 				return array($id, $o->getStudentId(), $o->getCourseId(), $o->getGrade(), $o->getYear());
 
 			case 'LecturerModel' :
-				return array($id, $o->getTitle(), $o->getSurname(), $o->getName(), $o->getBirthday());
+				return array($id, $o->getTitle(), $o->getSurname(), $o->getName(), $o->getBirthday(), $o->getWorkload());
 
 			case 'StudentModel' :
-				return array($id, $o->getSurname(), $o->getName(), $o->getBirthday());
+				return array($id, $o->getSurname(), $o->getName(), $o->getBirthday(), $o->getWorkload(), $o->getGPA());
 
 			case 'ErrorModel' :
-				return array($id, $o->getDate(), $o->getErrorMessage());
+				return array($id, $o->getDate()->format('Y-m-d H:i:s'), $o->getErrorMessage());
 		}
 
 		return null;

@@ -82,7 +82,7 @@ class CourseModel
 		$this->semester = $semester;
 
 		if ($save) {
-			Database::getInstance()->save($this);
+			$this->id = Database::getInstance()->save($this);
 		} else {
 			$this->id = $id;
 		}
