@@ -146,7 +146,7 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 	}
 
 
-	public function calculateWorkload(Lecturer $lecturer)
+	public function getWorkload(Lecturer $lecturer)
 	{
 		$workload = 0;
 

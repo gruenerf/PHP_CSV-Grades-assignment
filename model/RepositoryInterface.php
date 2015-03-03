@@ -3,6 +3,13 @@
 interface RepositoryInterface
 {
 	/**
+	 * Updates a certain object in the database
+	 * @param $o
+	 * @return mixed
+	 */
+	public function update($o);
+
+	/**
 	 * Returns Object with certain id
 	 * @param $id
 	 * @return mixed

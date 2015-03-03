@@ -3,6 +3,14 @@
 class BaseRepository
 {
 	/**
+	 * Updates a Object in the database
+	 * @param $object
+	 */
+	public function update($object){
+		$object->update();
+	}
+
+	/**
 	 * Returns String Representation of semester
 	 *
 	 * @param DateTime $date

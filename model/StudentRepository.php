@@ -173,7 +173,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	 * Returns Workload
 	 * @return int
 	 */
-	public function calculateWorkload(Student $student)
+	public function getWorkload(Student $student)
 	{
 		$workload = 0;
 		$courses = $this->getCurrentCourse($student);
@@ -195,7 +195,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	 * Returns GPA as float
 	 * @return float
 	 */
-	public function calculateGpa(Student $student)
+	public function getGpa(Student $student)
 	{
 		$gradeArray = $this->getCompletedCourse($student);
 		$ects_total = 0;
@@ -226,7 +226,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	 */
 	public function getStatus(Student $student)
 	{
-		$gpa = $this->calculateGpa($student);
+		$gpa = $this->getGpa($student);
 		if ($gpa <= 1.99) {
 			return 'unsatisfactory';
 		} elseif (2 <= $gpa && $gpa <= 2.99) {

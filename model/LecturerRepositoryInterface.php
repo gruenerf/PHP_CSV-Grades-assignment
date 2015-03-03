@@ -7,7 +7,7 @@ interface LecturerRepositoryInterface extends RepositoryInterface
 {
 	public function create($title, $name, $surname, $birthday);
 
-	public function calculateWorkload(Lecturer $lecturer);
+	public function getWorkload(Lecturer $lecturer);
 
 	public function getPreviousCourse(Lecturer $lecturer);
 

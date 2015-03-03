@@ -1,5 +1,8 @@
 <?php
 
+use LecturerModel as Lecturer;
+use CourseModel as Course;
+
 class LecturerController
 {
 	private $lecturerRepository;
@@ -11,66 +14,37 @@ class LecturerController
 
 	function newLecturer($title, $surname, $name, $birthday)
 	{
-		return new LecturerModel($title, $surname, $name, $birthday);
+		$this->lecturerRepository->create($title, $surname, $name, $birthday);
 	}
 
-	function updateLecturer($lecturer)
+	function updateLecturer(Lecturer $lecturer)
 	{
-		if (get_class($lecturer) == 'LecturerModel') {
-			Database::getInstance()->update($lecturer);
-		} else {
-			new ErrorModel('Object not from type LecturerModel');
-		}
+		$this->lecturerRepository->update($lecturer);
 	}
 
 	function getAllLecturer()
 	{
-		return Database::getInstance()->getAll('LecturerModel');
+		return $this->lecturerRepository->getAll();
 	}
 
-	function getAllCourseByLecturerPrevious($lecturer)
+	function getAllCourseByLecturerPrevious(Lecturer $lecturer)
 	{
-		if (get_class($lecturer) == 'LecturerModel') {
-			return $lecturer->getPreviousCourse();
-		} else {
-			new ErrorModel('Object not from type LecturerModel');
-		}
+		return $this->lecturerRepository->getPreviousCourse($lecturer);
 	}
 
-	function getAllCourseByLecturerCurrent($lecturer)
+	function getAllCourseByLecturerCurrent(Lecturer $lecturer)
 	{
-		if (get_class($lecturer) == 'LecturerModel') {
-			return $lecturer->getCurrentCourse();
-		} else {
-			new ErrorModel('Object not from type LecturerModel');
-		}
+		return $this->lecturerRepository->getCurrentCourse($lecturer);
 	}
 
-	function addPreviousCourse($lecturer, $course)
+	function addCourse(Lecturer $lecturer, Course $course)
 	{
-		if (get_class($lecturer) == 'LecturerModel' && get_class($course) == 'CourseModel') {
-			$lecturer->addPreviousCourse($course);
-		} else {
-			new ErrorModel('Object not from type LecturerModel/CourseModel');
-		}
+		$this->lecturerRepository->addCourse($lecturer, $course);
 	}
 
-	function addCurrentCourse($lecturer, $course)
+	function getWorkload(Lecturer $lecturer)
 	{
-		if (get_class($lecturer) == 'LecturerModel' && get_class($course) == 'CourseModel') {
-			$lecturer->addCurrentCourse($course);
-		} else {
-			new ErrorModel('Object not from type LecturerModel/CourseModel');
-		}
-	}
-
-	function getWorkload($lecturer)
-	{
-		if (get_class($lecturer) == 'LecturerModel') {
-			return $lecturer->calculateWorkload();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->lecturerRepository->getWorkload($lecturer);
 	}
 
 } 

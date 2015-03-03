@@ -17,9 +17,9 @@ interface StudentRepositoryInterface extends RepositoryInterface
 
 	public function getAllCourseByStudent(Student $student);
 
-	public function calculateWorkload(Student $student);
+	public function getWorkload(Student $student);
 
-	public function calculateGpa(Student $student);
+	public function geteGpa(Student $student);
 
 	public function getStatus(Student $student);
 

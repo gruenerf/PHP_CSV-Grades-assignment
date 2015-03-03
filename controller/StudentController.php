@@ -1,94 +1,65 @@
 <?php
 
+use StudentModel as Student;
+use CourseModel as Course;
+
 class StudentController
 {
-	private $lecturerRepository;
+	private $studentRepository;
 
-	public function __construct(LecturerRepositoryInterface $lectruerRepository)
+	public function __construct(StudentRepositoryInterface $studentRepository)
 	{
-		$this->lecturerRepository = $lectruerRepository;
+		$this->studentRepository = $studentRepository;
 	}
 
 	function newStudent($surname, $name, $birthday)
 	{
-		return new StudentModel($surname, $name, $birthday);
+		return $this->studentRepository->create($surname, $name, $birthday);
 	}
 
-	function updateStudent($student)
+	function updateStudent(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			Database::getInstance()->update($student);
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		$this->studentRepository->update($student);
 	}
 
 	function getAllStudent()
 	{
-		return Database::getInstance()->getAll('StudentModel');
+		return $this->studentRepository->getAll();
 	}
 
-	function getAllGradeByStudent($student)
+	function getAllGradeByStudent(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return Database::getInstance()->getAllBy($student, 'Grade');
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->getAllGradeByStudent($student);
 	}
 
-	function getAllCompletedCourse($student)
+	function getAllCompletedCourse(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return $student->getCompletedCourse();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->getCompletedCourse($student);
 	}
 
-	function getAllRegisteredCourse($student)
+	function getAllRegisteredCourse(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return $student->getRegisteredCourse();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->addRegisteredCourse($student);
 	}
 
-	function addRegisteredCourse($student, $course)
+	function addRegisteredCourse(Student $student, Course $course)
 	{
-		if (get_class($student) == 'StudentModel' && get_class($course) == 'CourseModel') {
-			$student->addRegisteredCourse($course);
-		} else {
-			new ErrorModel('Object not from type StudentModel/CourseModel');
-		}
+		$this->studentRepository->addRegisteredCourse($student, $course);
 	}
 
-	function getWorkload($student)
+	function getWorkload(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return $student->calculateWorkload();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->getWorkload($student);
 	}
 
-	function getGpa($student)
+	function getGpa(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return $student->calculateGpa();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->getGPA($student);
 	}
 
-	function getStatus($student)
+	function getStatus(Student $student)
 	{
-		if (get_class($student) == 'StudentModel') {
-			return $student->getStatus();
-		} else {
-			new ErrorModel('Object not from type StudentModel');
-		}
+		return $this->studentRepository->getStatus($student);
 	}
 
 
