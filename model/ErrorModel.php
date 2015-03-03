@@ -1,12 +1,21 @@
 <?php
 
-class ErrorModel {
+class ErrorModel extends BaseModel implements ErrorModelInterface
+{
 
 	/**
 	 * Private variables
-	 * @var DateTime
 	 */
+
 	private $id, $date, $errormessage;
+
+	/**
+	 * Static counter for ids
+	 * @var int
+	 */
+
+	private static $counter = 0;
+
 
 	/**
 	 * Getter / Setter
@@ -45,13 +54,64 @@ class ErrorModel {
 	/**
 	 * Constructor
 	 * @param $errormessage
+	 * @param null $date
+	 * @param int $id
+	 * @param bool $save
 	 */
-	function __construct($errormessage)
+	function __construct($errormessage, $date = NULL, $id = 0, $save = true)
 	{
-		$this->date = new DateTime();
+		if (isset($date)) {
+			$this->date = $date;
+		} else {
+			$this->date = new DateTime();
+		}
 		$this->errormessage = $errormessage;
 
-		Database::getInstance()->save($this);
+		if ($save) {
+			$this->id = $this->save();
+		} else {
+			$this->id = $id;
+		}
 	}
 
-} 
+	/**
+	 * Saves the Object
+	 */
+	public function save()
+	{
+		if (file_exists(ROOT_PATH . "/data/errorlog.txt")) {
+			$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'a') or die ('Failed!');
+		} else {
+			$fh = fopen(ROOT_PATH . "/data/errorlog.txt", 'w') or die ('Failed!');
+			fputcsv($fh, array('id', 'date', 'message'));
+		}
+
+		fputcsv($fh, $this->toArray());
+
+		fclose($fh);
+
+		return self::$counter++;
+	}
+
+	// Not needed for Errors because its just a log
+	public function update()
+	{
+
+	}
+
+	/**
+	 * Returns Array representation of Class
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		if ($this->getId() === null) {
+			$id = self::$counter;
+		} else {
+			$id = $this->getId();
+		}
+
+		return array($id, $this->getDate()->format('Y-m-d H:i:s'), $this->getErrorMessage());
+	}
+}

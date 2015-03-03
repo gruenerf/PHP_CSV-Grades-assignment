@@ -3,13 +3,23 @@
 /**
  * Class LecturerModel
  */
-class LecturerModel
+use ErrorModel as Error;
+
+class LecturerModel implements LecturerModelInterface
 {
 	/**
 	 * Private variables
 	 */
 
-	private $id, $title, $surname, $name, $birthday, $workload;
+	private $id, $title, $name, $surname, $birthday, $workload;
+
+	/**
+	 * Static counter for ids
+	 * @var int
+	 */
+
+	private static $counter = 0;
+
 
 	/**
 	 * Getter/Setter
@@ -75,70 +85,85 @@ class LecturerModel
 		$this->workload = $workload;
 	}
 
-
 	/**
 	 * Constructor
-	 *
 	 * @param $title
 	 * @param $name
 	 * @param $surname
 	 * @param $birthday
-	 * @param $workload
-	 * @param int $id
+	 * @param string $workload
+	 * @param null $id
 	 * @param bool $save
 	 */
-
-	public function __construct($title, $name, $surname,  $birthday, $workload = "undefined", $id = 0, $save = true)
+	public function __construct($title, $name, $surname, $birthday, $workload = "undefined", $id = NULL, $save = true)
 	{
 		$this->title = $title;
-		$this->surname = $surname;
 		$this->name = $name;
+		$this->surname = $surname;
 		$this->birthday = $birthday;
 		$this->workload = $workload;
 
 		if ($save) {
-			$this->id = Database::getInstance()->save($this);
+			$this->id = $this->save();
 		} else {
 			$this->id = $id;
 		}
 	}
 
-	public function calculateWorkload()
+	/**
+	 * Saves the Object
+	 */
+	public function save()
 	{
-		$workload = 0;
-		$courses = Database::getInstance()->getAllBy($this,'Course','current');
-
-		foreach ($courses as $course) {
-			$workload += $course->getEcts();
+		if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
+			$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'a') or die ('Failed!');
+		} else {
+			$fh = fopen(ROOT_PATH . "/data/lecturer.txt", 'w') or die ('Failed!');
+			fputcsv($fh, array('id', 'title', 'name', 'surname', 'birthday', 'workload'));
 		}
 
-		$result = $workload * 5;
+		fputcsv($fh, $this->toArray());
 
-		// Update Database
-		$this->setWorkload($result);
-		Database::getInstance()->update($this);
+		fclose($fh);
 
-		return $result;
+		return self::$counter++;
 	}
 
-	public function addPreviousCourse(CourseModel $course)
+	/**
+	 * Updates the Object
+	 */
+	public function update()
 	{
-		Database::getInstance()->add($this, $course, 'previous');
+		$objectArray = LecturerRepository::getInstance()->getAll();
+
+		for ($i = 0; $i < count($objectArray); $i++) {
+			if ($objectArray[$i]->getId() == $this->getId()) {
+				$objectArray[$i] = $this;
+				break;
+			}
+		}
+
+		if (!unlink(ROOT_PATH . "/data/lecturer.txt")) {
+			new Error("Error deleting lecturer.txt");
+		}
+
+		foreach ($objectArray as $object) {
+			$object->save();
+		}
 	}
 
-	public function getPreviousCourse()
+	/**
+	 * Returns Array representation of Class
+	 *
+	 * @return array
+	 */
+	public function toArray()
 	{
-		return Database::getInstance()->getAllBy($this,'Course','previous');
+		if ($this->getId() === NULL) {
+			$id = self::$counter;
+		} else {
+			$id = $this->getId();
+		}
+		return array($id, $this->getTitle(), $this->getName(), $this->getSurname(), $this->getBirthday(), $this->getWorkload());
 	}
-
-	public function addCurrentCourse(CourseModel $course)
-	{
-		Database::getInstance()->add($this, $course, 'current');
-	}
-
-	public function getCurrentCourse()
-	{
-		return Database::getInstance()->getAllBy($this,'Course','current');
-	}
-
 } 

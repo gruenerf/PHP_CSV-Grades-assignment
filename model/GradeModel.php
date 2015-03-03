@@ -3,13 +3,22 @@
 /**
  * Class GradeModel
  */
-class GradeModel
+use ErrorModel as Error;
+
+class GradeModel extends BaseModel implements GradeModelInterface
 {
 	/**
 	 * Private variables
 	 */
 
-	private $id, $studentId, $courseId, $grade, $year;
+	private $id, $studentId, $courseId, $grade, $semester;
+
+	/**
+	 * Static counter for ids
+	 * @var int
+	 */
+
+	private static $counter = 0;
 
 	/**
 	 * Getters/Setters
@@ -45,14 +54,14 @@ class GradeModel
 		$this->grade = $grade;
 	}
 
-	public function getYear()
+	public function getSemester()
 	{
-		return $this->year;
+		return $this->semester;
 	}
 
-	public function setYear($year)
+	public function setSemester($semester)
 	{
-		$this->year = $year;
+		$this->semester = $semester;
 	}
 
 	public function getStudentId()
@@ -67,24 +76,81 @@ class GradeModel
 
 	/**
 	 * Constructor
-	 * @param $student
-	 * @param $course
+	 * @param $studentId
+	 * @param $courseId
 	 * @param $grade
-	 * @param int $id
+	 * @param null $id
 	 * @param bool $save
 	 */
-
-	public function __construct($studentId, $courseId, $grade, $year, $id = 0, $save = true)
+	public function __construct($studentId, $courseId, $grade, $id = NULL, $save = true)
 	{
 		$this->studentId = $studentId;
 		$this->courseId = $courseId;
 		$this->grade = $grade;
-		$this->year = $year;
+		$this->year = CourseRepository::getInstance()->getById($courseId)->getSemester();
 
 		if ($save) {
-			$this->id = Database::getInstance()->save($this);
+			$this->id = $this->save();
 		} else {
 			$this->id = $id;
 		}
+	}
+
+	/**
+	 * Saves the Object
+	 */
+	public function save()
+	{
+		if (file_exists(ROOT_PATH . "/data/grade.txt")) {
+			$fh = fopen(ROOT_PATH . "/data/grade.txt", 'a') or die ('Failed!');
+		} else {
+			$fh = fopen(ROOT_PATH . "/data/grade.txt", 'w') or die ('Failed!');
+			fputcsv($fh, array('id', 'studentId', 'courseId', 'grade', 'year'));
+		}
+
+		fputcsv($fh, $this->toArray());
+
+		fclose($fh);
+
+		return self::$counter++;
+	}
+
+	/**
+	 * Updates the Object
+	 */
+	public function update()
+	{
+		$objectArray = GradeRepository::getInstance()->getAll();
+
+		for ($i = 0; $i < count($objectArray); $i++) {
+			if ($objectArray[$i]->getId() == $this->getId()) {
+				$objectArray[$i] = $this;
+				break;
+			}
+		}
+
+		if (!unlink(ROOT_PATH . "/data/grade.txt")) {
+			new Error("Error deleting grade.txt");
+		}
+
+		foreach ($objectArray as $object) {
+			$object->save();
+		}
+	}
+
+	/**
+	 * Returns Array representation of Class
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		if ($this->getId() === null) {
+			$id = self::$counter;
+		} else {
+			$id = $this->getId();
+		}
+
+		return array($id, $this->getStudentId(), $this->getCourseId(), $this->getGrade(), $this->getYear());
 	}
 }

@@ -10,9 +10,9 @@ foreach (glob(ROOT_PATH."/model/*.php") as $filename) {
 	include $filename;
 }
 
-$gradeController = new GradeController();
-$courseController = new CourseController();
-$lecturerController = new LecturerController();
-$studentController = new StudentController();
+$gradeController = new GradeController(GradeRepository::getInstance());
+$courseController = new CourseController(CourseRepository::getInstance());
+$lecturerController = new LecturerController(LecturerRepository::getInstance());
+$studentController = new StudentController(StudentRepository::getInstance());
 
 ?>

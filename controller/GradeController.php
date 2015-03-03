@@ -2,8 +2,14 @@
 
 class GradeController {
 
-	function newGrade($student, $course, $grade, $year){
-		return new GradeModel($student, $course, $grade, $year);
+	private $gradeRepository;
+
+	public function __construct(GradeModelInterface $gradeRepository){
+		$this->gradeRepository = $gradeRepository;
+	}
+
+	function newGrade($student, $course, $grade){
+		return new GradeModel($student, $course, $grade);
 	}
 
 	function updateGrade($grade){

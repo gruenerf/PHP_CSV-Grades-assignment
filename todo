@@ -1,9 +1,19 @@
-basmodel as parentclass for all models
-write testclass to make csv files
-make first output
-
-
 basecontroller for routing
 -> function in controller
 		-> csall the view
 	view would be the tables ( check if those variables are set to preven alse code)
+
+
+______________
+
+Make repositories/controllers singleton
+Remove Database refrences
+actualize controllers
+
+test list people
+
+Comment all models
+Check for todos
+Look through files for errors
+
+write readme
