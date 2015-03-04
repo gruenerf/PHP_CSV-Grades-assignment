@@ -7,6 +7,8 @@ foreach (glob("data/*.txt") as $filename)
 	unlink($filename);
 }
 
+session_unset();
+
 $c1 = $courseController->create('AI', '10', '1', new DateTime('2014-10-01'));
 $c2 = $courseController->create('Norsk', '5', '2', new DateTime('2016-10-01'));
 $c3 = $courseController->create('Mobile App Design', '5', '1', new DateTime('2014-10-01'));
@@ -27,8 +29,6 @@ $studentController->addCourse($s2,$c2);
 $studentController->addCourse($s2,$c3);
 $studentController->addCourse($s2,$c4);
 $studentController->addCourse($s2,$c5);
-$studentController->addCourse($s2,$c6);
-$studentController->addCourse($s2,$c7);
 $studentController->addCourse($s2,$c8);
 
 $studentController->addCourse($s1,$c1);
@@ -50,16 +50,16 @@ $studentController->addCourse($s5,$c8);
 $studentController->addCourse($s5,$c7);
 $studentController->addCourse($s5,$c1);
 
-$g1 = $gradeController->create($s1->getId(),$c2->getId(),'A');
-$g2 = $gradeController->create($s2->getId(),$c2->getId(),'E');
-$g3 = $gradeController->create($s3->getId(),$c3->getId(),'C');
-$g4 = $gradeController->create($s4->getId(),$c4->getId(),'B');
-$g5 = $gradeController->create($s5->getId(),$c5->getId(),'D');
-$g6 = $gradeController->create($s1->getId(),$c1->getId(),'D');
-$g7 = $gradeController->create($s2->getId(),$c2->getId(),'A');
-$g8 = $gradeController->create($s3->getId(),$c4->getId(),'B');
-$g9 = $gradeController->create($s4->getId(),$c5->getId(),'A');
-$g10 = $gradeController->create($s5->getId(),$c2->getId(),'C');
+$g1 = $gradeController->create($s1->getId(),$c2->getId(),'A', new DateTime('2015-03-08'));
+$g2 = $gradeController->create($s2->getId(),$c2->getId(),'E', new DateTime('2015-08-11'));
+$g3 = $gradeController->create($s3->getId(),$c3->getId(),'C', new DateTime('2015-05-01'));
+$g4 = $gradeController->create($s4->getId(),$c4->getId(),'B', new DateTime('2015-03-01'));
+$g5 = $gradeController->create($s5->getId(),$c5->getId(),'D', new DateTime('2015-12-05'));
+$g6 = $gradeController->create($s1->getId(),$c1->getId(),'D', new DateTime('2015-03-01'));
+$g7 = $gradeController->create($s2->getId(),$c2->getId(),'A', new DateTime('2015-03-01'));
+$g8 = $gradeController->create($s3->getId(),$c4->getId(),'B', new DateTime('2015-08-05'));
+$g9 = $gradeController->create($s4->getId(),$c5->getId(),'A', new DateTime('2015-03-01'));
+$g10 = $gradeController->create($s5->getId(),$c2->getId(),'C', new DateTime('2015-05-01'));
 
 $l1 = $lecturerController->create('Dr.','Eric','Cartman','20.03.1965');
 $l2 = $lecturerController->create('Prof.','Kenny','McCormick','20.03.1935');

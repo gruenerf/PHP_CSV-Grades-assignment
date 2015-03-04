@@ -1,18 +1,12 @@
 <?php
 
+// Start Session
 session_start();
 
-// set session variables
-$_SESSION['course_id'];
-$_SESSION['grade_id'];
-$_SESSION['error_id'];
-$_SESSION['student_id'];
-$_SESSION['lecturer_id'];
-
-
-
+// Define Root Path
 define('ROOT_PATH', realpath(__DIR__));
 
+// Include all classes
 foreach (glob(ROOT_PATH . "/controller/*.php") as $filename) {
 	require_once($filename);
 }
@@ -34,6 +28,13 @@ foreach (glob(ROOT_PATH . "/model/*.php") as $filename) {
 	require_once($filename);
 }
 
+//set Constants
+define('stylePath' , 'assets/css/');
+define('imgPath' , 'assets/img/');
+define('fontsPath', 'assets/fonts/');
+define('jsPath' , 'assets/js/');
+
+// Initialize Controllers
 $errorController = new ErrorController(ErrorRepository::getInstance());
 $gradeController = new GradeController(GradeRepository::getInstance());
 $courseController = new CourseController(CourseRepository::getInstance());

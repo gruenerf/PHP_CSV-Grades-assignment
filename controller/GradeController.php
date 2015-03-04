@@ -11,9 +11,9 @@ class GradeController
 		$this->gradeRepository = $gradeRepository;
 	}
 
-	function create($student, $course, $grade)
+	function create($student, $course, $grade, DateTime $date)
 	{
-		return $this->gradeRepository->create($student, $course, $grade);
+		return $this->gradeRepository->create($student, $course, $grade, $date);
 	}
 
 	function update(Grade $grade)

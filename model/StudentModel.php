@@ -13,15 +13,6 @@ class StudentModel implements StudentModelInterface
 
 	private $id, $name, $surname, $birthday, $workload, $gpa;
 
-
-	/**
-	 * Static counter for ids
-	 * @var int
-	 */
-
-	private static $counter = 1;
-
-
 	/**
 	 * Getters/Setters
 	 */
@@ -114,7 +105,8 @@ class StudentModel implements StudentModelInterface
 	/**
 	 * Saves the Object
 	 */
-	public function save(){
+	public function save()
+	{
 		if (file_exists(ROOT_PATH . "/data/student.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/student.txt", 'a') or die ('Failed!');
 		} else {
@@ -126,13 +118,14 @@ class StudentModel implements StudentModelInterface
 
 		fclose($fh);
 
-		return self::$counter++;
+		return $_SESSION['studentId']++;
 	}
 
 	/**
 	 * Updates the Object
 	 */
-	public function update(){
+	public function update()
+	{
 		$objectArray = StudentRepository::getInstance()->getAll();
 
 		for ($i = 0; $i < count($objectArray); $i++) {
@@ -156,9 +149,17 @@ class StudentModel implements StudentModelInterface
 	 *
 	 * @return array
 	 */
-	public function toArray(){
-		if ($this->getId() === null) {
-			$id = self::$counter;
+	public function toArray()
+	{
+
+
+		if ($this->getId() === NULL) {
+			if (isset($_SESSION['studentId'])) {
+				$id = $_SESSION['studentId'];
+			} else {
+				$_SESSION['studentId'] = 1;
+				$id = $_SESSION['studentId'];
+			}
 		} else {
 			$id = $this->getId();
 		}

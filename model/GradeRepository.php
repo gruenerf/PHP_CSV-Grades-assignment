@@ -31,9 +31,9 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 		return self::$gradeRepository;
 	}
 
-	public function create($studentId, $courseId, $grade)
+	public function create($studentId, $courseId, $grade, DateTime $date)
 	{
-		return new Grade($studentId, $courseId, $grade);
+		return new Grade($studentId, $courseId, $grade, $date);
 	}
 
 	public function getById($id)
@@ -64,7 +64,7 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 			$a = fgetcsv($fh);
 
 			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null) {
-				array_push($objectArray, new Grade($a[1], $a[2], $a[3], $a[0], false));
+				array_push($objectArray, new Grade($a[1], $a[2], $a[3], new DateTime($a[5]), $a[0], false));
 			}
 		};
 
@@ -86,6 +86,7 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 			$tempArray['name'] = StudentRepository::getInstance()->getById($grade->getStudentId())->getName();
 			$tempArray['surname'] = StudentRepository::getInstance()->getById($grade->getStudentId())->getSurname();
 			$tempArray['semester'] = $grade->getSemester();
+			$tempArray['date'] = StudentRepository::getInstance()->dateToSemester(new DateTime($grade->getDate()));
 			$tempArray['grade'] = $grade->getGrade();
 
 			array_push($arrayBuffer, $tempArray);
@@ -95,7 +96,7 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 			usort($arrayBuffer, function ($a, $b) use ($attr) {
 				if ($attr == 'title' | $attr == 'name' | $attr == 'surname' | $attr == 'grade') {
 					return strcmp($a[$attr], $b[$attr]);
-				} elseif ($attr == 'semester') {
+				} elseif ($attr == 'semester' | $attr == 'date') {
 					return self::compareSemesterDate($a[$attr], $b[$attr]);
 				} elseif ($attr == 'group') {
 					return $a[$attr] - $b[$attr];
@@ -106,7 +107,7 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 			usort($arrayBuffer, function ($a, $b) use ($attr) {
 				if ($attr == 'title' | $attr == 'name' | $attr == 'surname' | $attr == 'grade') {
 					return strcmp($b[$attr], $a[$attr]);
-				} elseif ($attr == 'semester') {
+				} elseif ($attr == 'semester' | $attr == 'date') {
 					return self::compareSemesterDate($b[$attr], $a[$attr]);
 				} elseif ($attr == 'group') {
 					return $b[$attr] - $a[$attr];
@@ -129,13 +130,12 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 					if ($course = CourseRepository::getInstance()->getById($grade[1])) {
 						if (StudentRepository::getInstance()->checkIfStudentIsRegisteredForCourse($student, $course)) {
 							$gradedArray = StudentRepository::getInstance()->checkIfStudentHasBeenGradedInCourse($student, $course);
-							var_dump($gradedArray);
 
 							// Assuming Grade E+F means not passing the exam
 							if (!$gradedArray[0] | ($gradedArray[0] && self::transformGradeToInt($gradedArray[1]) < 2)) {
 
 								// Create grade
-								GradeRepository::getInstance()->create($grade[0], $grade[1], $grade[2]);
+								GradeRepository::getInstance()->create($grade[0], $grade[1], $grade[2], new DateTime($grade[3]));
 							} else {
 								array_push($notifications, ErrorRepository::getInstance()->create('Student with id=' . $grade[0] . ' has already passed Course with id=' . $grade[1] . '.')->getErrormessage());
 							}

@@ -1,12 +1,3 @@
-<?php
-require("../config.php");
-?>
-
-<html>
-<head>
-	<title>List of People</title>
-</head>
-<body>
 <h2>Courses</h2>
 <table>
 	<thead>
@@ -17,7 +8,8 @@ require("../config.php");
 		<td>Times previously taught</td>
 	</tr>
 	</thead>
-	<?php foreach ($courseController->getCurrentCoursesGroupsAndPreviously() as $course):?>
+	<tbody>
+	<?php foreach ($courseController->getCurrentCoursesGroupsAndPreviously() as $course): ?>
 		<tr>
 			<td>
 				<?= $course['name']; ?>
@@ -33,7 +25,5 @@ require("../config.php");
 			</td>
 		</tr>
 	<?php endforeach; ?>
+	</tbody>
 </table>
-
-</body>
-</html>

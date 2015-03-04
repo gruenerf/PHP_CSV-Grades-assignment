@@ -1,17 +1,8 @@
-<?php
-require("../config.php");
-?>
-
-<html>
-<head>
-	<title>List of People</title>
-</head>
-<body>
-
-<form action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-	<input type="file" name="file">
-	<input type="submit" name="submit" value="Upload File"/>
+<form class="uploadform" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+	<input class="input" type="file" name="file">
+	<input class="submit" type="submit" name="submit" value="Upload File"/>
 </form>
+<div class="notifications">
 <?php
 
 if (isset($_POST["submit"])) {
@@ -35,20 +26,23 @@ if (isset($_POST["submit"])) {
 
 				$a = fgetcsv($fh);
 
-				if (count($a) == 3) {
+				if (count($a) == 4) {
 
 					//santisize fields
 					$a0 = strip_tags($a[0]);
 					$a1 = strip_tags($a[1]);
 					$a2 = strip_tags($a[2]);
+					$a3 = strip_tags($a[3]);
 
-					if ($a0 && $a1 && $a2 && $a0 > 0 && $a1 > 0) {
+
+					if ($a0 && $a1 && $a2 && $a3 && $a0 > 0 && $a1 > 0) {
 
 						$studentId = intval($a0);
 						$courseId = intval($a1);
 						$grade = $a2;
+						$date = $a3;
 
-						$tempArray = array($studentId, $courseId, $grade);
+						$tempArray = array($studentId, $courseId, $grade, $date);
 						array_push($csvArray, $tempArray);
 					} else {
 						// Throw Error
@@ -77,8 +71,7 @@ if (isset($_POST["submit"])) {
 	}
 
 	foreach ($notifications as $notification) {
-		echo $notification . '<br>';
+		echo '<p>'.$notification . '</p>';
 	}
 } ?>
-</body>
-</html>
+</div>

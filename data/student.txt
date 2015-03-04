@@ -1,6 +1,6 @@
 id,name,surname,birthday,workload,gpa
-1,Coolio,Gr&uuml;ner,21.11.1989,undefined,undefined
-2,Tom,Rogers,21.01.1992,undefined,undefined
-3,Sascha,Jenner,05.05.1990,undefined,undefined
-4,Patrick,Heller,05.07.1987,undefined,undefined
-5,Martina,Kaiser,01.04.1991,undefined,undefined
+1,Coolio,Gr&uuml;ner,21.11.1989,32,3.0
+2,Tom,Rogers,21.01.1992,44.8,5.0
+3,Sascha,Jenner,05.05.1990,16,3.8
+4,Patrick,Heller,05.07.1987,16,4.6
+5,Martina,Kaiser,01.04.1991,32,2.4

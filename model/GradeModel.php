@@ -11,14 +11,7 @@ class GradeModel implements GradeModelInterface
 	 * Private variables
 	 */
 
-	private $id, $studentId, $courseId, $grade, $semester;
-
-	/**
-	 * Static counter for ids
-	 * @var int
-	 */
-
-	private static $counter = 1;
+	private $id, $studentId, $courseId, $grade, $semester, $date;
 
 	/**
 	 * Getters/Setters
@@ -74,20 +67,34 @@ class GradeModel implements GradeModelInterface
 		$this->studentId = $studentId;
 	}
 
+	public function getDate(){
+		return $this->date;
+	}
+
+	public function setDate(DateTime $date){
+		$this->date = $date;
+	}
+
 	/**
 	 * Constructor
 	 * @param $studentId
 	 * @param $courseId
 	 * @param $grade
+	 * @param DateTime $date
 	 * @param null $id
 	 * @param bool $save
 	 */
-	public function __construct($studentId, $courseId, $grade, $id = NULL, $save = true)
+	public function __construct($studentId, $courseId, $grade, DateTime $date, $id = NULL, $save = true)
 	{
 		$this->studentId = $studentId;
 		$this->courseId = $courseId;
 		$this->grade = $grade;
+
+		// is the semester in which the course was originally taught
 		$this->semester = CourseRepository::getInstance()->getById($courseId)->getSemester();
+
+		// the date when the exam was taken
+		$this->date = $date->format('Y-m-d');
 
 		if ($save) {
 			$this->id = $this->save();
@@ -105,14 +112,14 @@ class GradeModel implements GradeModelInterface
 			$fh = fopen(ROOT_PATH . "/data/grade.txt", 'a') or die ('Failed!');
 		} else {
 			$fh = fopen(ROOT_PATH . "/data/grade.txt", 'w') or die ('Failed!');
-			fputcsv($fh, array('id', 'studentId', 'courseId', 'grade', 'year'));
+			fputcsv($fh, array('id', 'studentId', 'courseId', 'grade', 'courseSemester', 'date'));
 		}
 
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return self::$counter++;
+		return $_SESSION['gradeId']++;
 	}
 
 	/**
@@ -145,12 +152,17 @@ class GradeModel implements GradeModelInterface
 	 */
 	public function toArray()
 	{
-		if ($this->getId() === null) {
-			$id = self::$counter;
+		if ($this->getId() === NULL) {
+			if (isset($_SESSION['gradeId'])) {
+				$id = $_SESSION['gradeId'];
+			} else {
+				$_SESSION['gradeId'] = 1;
+				$id = $_SESSION['gradeId'];
+			}
 		} else {
 			$id = $this->getId();
 		}
 
-		return array($id, $this->getStudentId(), $this->getCourseId(), $this->getGrade(), $this->getSemester());
+		return array($id, $this->getStudentId(), $this->getCourseId(), $this->getGrade(), $this->getSemester(), $this->getDate());
 	}
 }

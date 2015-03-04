@@ -246,7 +246,8 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	 * @param CourseModel $course
 	 * @return bool
 	 */
-	public function checkIfStudentIsRegisteredForCourse(Student $student, Course $course){
+	public function checkIfStudentIsRegisteredForCourse(Student $student, Course $course)
+	{
 
 		if (file_exists(ROOT_PATH . "/data/student_course.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/student_course.txt", "r");
@@ -274,15 +275,32 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	 * @param CourseModel $course
 	 * @return array
 	 */
-	public function checkIfStudentHasBeenGradedInCourse(Student $student, Course $course){
+	public function checkIfStudentHasBeenGradedInCourse(Student $student, Course $course)
+	{
 		$array = $this->getAllGradeByStudent($student);
 
-		var_dump($array);
+		$arrayBuffer = array();
 
-		foreach($array as $grade){
-			if($grade->getCourseId() == $course->getId()){
-				return array(true, $grade->getGrade());
+		foreach ($array as $grade) {
+			if ($grade->getCourseId() == $course->getId()) {
+				array_push($arrayBuffer,
+					array($grade->getDate(), $grade->getGrade())
+				);
 			}
+		}
+
+		if (!empty($arrayBuffer)) {
+
+			$newest = array();
+			foreach ($arrayBuffer as $array) {
+				if (empty($newest)) {
+					$newest = array($array[0], $array[1]);
+				} elseif (new DateTime($newest[0]) < new DateTime($array[0])) {
+					$newest = array($array[0], $array[1]);
+				}
+			}
+
+			return array(true, $newest[1]);
 		}
 
 		return array(false, null);

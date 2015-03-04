@@ -10,14 +10,6 @@ class ErrorModel implements ErrorModelInterface
 	private $id, $date, $errormessage;
 
 	/**
-	 * Static counter for ids
-	 * @var int
-	 */
-
-	private static $counter = 1;
-
-
-	/**
 	 * Getter / Setter
 	 */
 
@@ -90,7 +82,7 @@ class ErrorModel implements ErrorModelInterface
 
 		fclose($fh);
 
-		return self::$counter++;
+		return $_SESSION['errorId']++;
 	}
 
 	// Not needed for Errors because its just a log
@@ -108,10 +100,10 @@ class ErrorModel implements ErrorModelInterface
 	{
 		if ($this->getId() === null) {
 			if (isset($_SESSION['errorId'])) {
-				$this->id = $_SESSION['errorId'];
+				$id = $_SESSION['errorId'];
 			} else {
 				$_SESSION['errorId'] = 1;
-				$this->id = $_SESSION['errorId'];
+				$id = $_SESSION['errorId'];
 			}
 		} else {
 			$id = $this->getId();

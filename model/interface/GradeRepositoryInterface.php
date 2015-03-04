@@ -2,7 +2,7 @@
 
 interface GradeRepositoryInterface extends RepositoryInterface
 {
-	public function create($studentId, $courseId, $grade);
+	public function create($studentId, $courseId, $grade, DateTime $date);
 
 	public function getAllSorted($attr, $dir);
 

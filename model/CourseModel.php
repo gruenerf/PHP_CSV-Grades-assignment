@@ -4,6 +4,7 @@
  * Class CourseModel
  */
 use ErrorModel as Error;
+
 class CourseModel implements CourseModelInterface
 {
 	/**
@@ -11,13 +12,6 @@ class CourseModel implements CourseModelInterface
 	 */
 
 	private $id, $name, $ects, $group, $semester;
-
-	/**
-	 * Static counter for ids
-	 * @var int
-	 */
-
-	private static $counter = 1;
 
 	/**
 	 * Getters/Setters
@@ -100,8 +94,7 @@ class CourseModel implements CourseModelInterface
 			} else {
 				$this->semester = $currentSemester;
 			}
-		}
-		else{
+		} else {
 			$this->semester = $semester;
 		}
 
@@ -129,7 +122,7 @@ class CourseModel implements CourseModelInterface
 
 		fclose($fh);
 
-		return self::$counter++;
+		return $_SESSION['courseId']++;
 	}
 
 	/**
@@ -162,8 +155,13 @@ class CourseModel implements CourseModelInterface
 	 */
 	public function toArray()
 	{
-		if ($this->getId() === null) {
-			$id = self::$counter;
+		if ($this->getId() === NULL) {
+			if (isset($_SESSION['courseId'])) {
+				$id = $_SESSION['courseId'];
+			} else {
+				$_SESSION['courseId'] = 1;
+				$id = $_SESSION['courseId'];
+			}
 		} else {
 			$id = $this->getId();
 		}

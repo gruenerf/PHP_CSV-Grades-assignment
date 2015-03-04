@@ -17,4 +17,8 @@ interface GradeModelInterface extends ModelInterface
 	public function getStudentId();
 
 	public function setStudentId($studentId);
+
+	public function getDate();
+
+	public function setDate(DateTime $date);
 } 

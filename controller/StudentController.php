@@ -43,7 +43,7 @@ class StudentController
 
 	function getAllRegisteredCourse(Student $student)
 	{
-		return $this->studentRepository->getAllCourseByStudent($student);
+		return $this->studentRepository->getCurrentCourse($student);
 	}
 
 	function addCourse(Student $student, Course $course)

@@ -14,14 +14,6 @@ class LecturerModel implements LecturerModelInterface
 	private $id, $title, $name, $surname, $birthday, $workload;
 
 	/**
-	 * Static counter for ids
-	 * @var int
-	 */
-
-	private static $counter = 1;
-
-
-	/**
 	 * Getter/Setter
 	 */
 
@@ -126,7 +118,7 @@ class LecturerModel implements LecturerModelInterface
 
 		fclose($fh);
 
-		return self::$counter++;
+		return $_SESSION['lecturerId']++;
 	}
 
 	/**
@@ -160,10 +152,16 @@ class LecturerModel implements LecturerModelInterface
 	public function toArray()
 	{
 		if ($this->getId() === NULL) {
-			$id = self::$counter;
+			if (isset($_SESSION['lecturerId'])) {
+				$id = $_SESSION['lecturerId'];
+			} else {
+				$_SESSION['lecturerId'] = 1;
+				$id = $_SESSION['lecturerId'];
+			}
 		} else {
 			$id = $this->getId();
 		}
+
 		return array($id, $this->getTitle(), $this->getName(), $this->getSurname(), $this->getBirthday(), $this->getWorkload());
 	}
 } 

@@ -1,24 +1,16 @@
-<?php
-require("../config.php");
-?>
-
-<html>
-<head>
-	<title>List of People</title>
-</head>
-<body>
-
 <table>
 	<thead>
 	<tr>
-		<td><a href="?attr=title&dir=asc">^</a><a href="?attr=title&dir=desc">v</a> CourseTitle</input></a></td>
-		<td><a href="?attr=group&dir=asc">^</a><a href="?attr=group&dir=desc">v</a>Group</a></td>
-		<td><a href="?attr=name&dir=asc">^</a><a href="?attr=name&dir=desc">v</a>Student Name</a></td>
-		<td><a href="?attr=surname&dir=asc">^</a><a href="?attr=surname&dir=desc">v</a>Student Surname</a></td>
-		<td><a href="?attr=semester&dir=asc">^</a><a href="?attr=semester&dir=desc">v</a>Semester</a></td>
-		<td><a href="?attr=grade&dir=asc">^</a><a href="?attr=grade&dir=desc">v</a>Grade</a></td>
+		<td>CourseTitle<a href="?route=list_grades&attr=title&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=title&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a> </input></a></td>
+		<td>Group<a href="?route=list_grades&attr=group&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=group&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
+		<td>Student Name<a href="?route=list_grades&attr=name&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=name&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
+		<td>Student Surname<a href="?route=list_grades&attr=surname&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=surname&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
+		<td>CourseSemester<a href="?route=list_grades&attr=semester&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=semester&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
+		<td>ExamSemester<a href="?route=list_grades&attr=date&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=date&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
+		<td>Grade<a href="?route=list_grades&attr=grade&dir=asc"><img class="arrow" src="<?php echo imgPath; ?>arrowup.png"></a><a href="?route=list_grades&attr=grade&dir=desc"><img class="arrow" src="<?php echo imgPath; ?>arrowdown.png"></a></a></td>
 	</tr>
 	</thead>
+	<tbody>
 	<?php
 
 	$attr = null;
@@ -28,7 +20,7 @@ require("../config.php");
 	 * Validation
 	 */
 	$attrArray = array(
-		'title', 'group', 'name', 'surname', 'semester', 'grade'
+		'title', 'group', 'name', 'surname', 'semester', 'date', 'grade'
 	);
 
 	$dirArray = array(
@@ -65,10 +57,12 @@ require("../config.php");
 				<?= $grade['semester']; ?>
 			</td>
 			<td>
+				<?= $grade['date']; ?>
+			</td>
+			<td>
 				<?= $grade['grade']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
+	</tbody>
 </table>
-</body>
-</html>

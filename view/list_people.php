@@ -1,15 +1,4 @@
-<?php
-	require("../config.php");
-?>
-
-<html>
-<head>
-	<title>List of People</title>
-</head>
-<body>
-<h2>Lecturers: <?php echo count($lecturerController->getAll()) ?></h2>
-
-<h2>Students: <?php echo count($studentController->getAll()); ?></h2>
+<h2>Lecturers: <?php echo count($lecturerController->getAll()) ?> | Students: <?php echo count($studentController->getAll()); ?></h2>
 
 <!-- Lecturer Table -->
 <table>
@@ -24,6 +13,7 @@
 		<td>number previous courses</td>
 	</tr>
 	</thead>
+	<tbody>
 	<?php
 	foreach ($lecturerController->getAll() as $lecturer): ?>
 		<tr>
@@ -50,6 +40,7 @@
 			</td>
 		</tr>
 	<?php endforeach; ?>
+	</tbody>
 </table>
 
 <!-- Student Table -->
@@ -66,7 +57,7 @@
 		<td>number completed courses</td>
 	</tr>
 	</thead>
-	<?php
+	<tbody><?php
 	foreach ($studentController->getAll() as $student): ?>
 		<tr>
 			<td>
@@ -95,8 +86,6 @@
 			</td>
 		</tr>
 	<?php endforeach; ?>
+	</tbody>
 </table>
-</body>
-</html>
-
 
