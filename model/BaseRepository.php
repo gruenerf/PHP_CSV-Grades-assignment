@@ -12,6 +12,31 @@ class BaseRepository
 	}
 
 	/**
+	 * Transforms Grade into Integer Representation
+	 * @param $grade
+	 * @return int
+	 */
+	public function transformGradeToInt($grade)
+	{
+		switch ($grade) {
+			case 'A' :
+				return 5;
+			case 'B' :
+				return 4;
+			case 'C' :
+				return 3;
+			case 'D' :
+				return 2;
+			case 'E' :
+				return 1;
+			case 'F' :
+				return 0;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns String Representation of semester
 	 *
 	 * @param DateTime $date

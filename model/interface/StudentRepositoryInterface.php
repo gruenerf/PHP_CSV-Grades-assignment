@@ -23,5 +23,7 @@ interface StudentRepositoryInterface extends RepositoryInterface
 
 	public function getStatus(Student $student);
 
-	public function transformGradeToInt($grade);
+	public function checkIfStudentIsRegisteredForCourse(Student $student, Course $course);
+
+	public function checkIfStudentHasBeenGradedInCourse(Student $student, Course $course);
 } 

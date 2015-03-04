@@ -14,7 +14,7 @@ class ErrorModel implements ErrorModelInterface
 	 * @var int
 	 */
 
-	private static $counter = 0;
+	private static $counter = 1;
 
 
 	/**
@@ -107,7 +107,12 @@ class ErrorModel implements ErrorModelInterface
 	public function toArray()
 	{
 		if ($this->getId() === null) {
-			$id = self::$counter;
+			if (isset($_SESSION['errorId'])) {
+				$this->id = $_SESSION['errorId'];
+			} else {
+				$_SESSION['errorId'] = 1;
+				$this->id = $_SESSION['errorId'];
+			}
 		} else {
 			$id = $this->getId();
 		}

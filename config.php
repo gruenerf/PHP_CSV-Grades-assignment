@@ -1,5 +1,16 @@
 <?php
 
+session_start();
+
+// set session variables
+$_SESSION['course_id'];
+$_SESSION['grade_id'];
+$_SESSION['error_id'];
+$_SESSION['student_id'];
+$_SESSION['lecturer_id'];
+
+
+
 define('ROOT_PATH', realpath(__DIR__));
 
 foreach (glob(ROOT_PATH . "/controller/*.php") as $filename) {
@@ -23,6 +34,7 @@ foreach (glob(ROOT_PATH . "/model/*.php") as $filename) {
 	require_once($filename);
 }
 
+$errorController = new ErrorController(ErrorRepository::getInstance());
 $gradeController = new GradeController(GradeRepository::getInstance());
 $courseController = new CourseController(CourseRepository::getInstance());
 $lecturerController = new LecturerController(LecturerRepository::getInstance());

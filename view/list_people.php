@@ -7,9 +7,9 @@
 	<title>List of People</title>
 </head>
 <body>
-<h2>Lecturers: <?php echo count($lecturerController->getAllLecturer()) ?></h2>
+<h2>Lecturers: <?php echo count($lecturerController->getAll()) ?></h2>
 
-<h2>Students: <?php echo count($studentController->getAllStudent()); ?></h2>
+<h2>Students: <?php echo count($studentController->getAll()); ?></h2>
 
 <!-- Lecturer Table -->
 <table>

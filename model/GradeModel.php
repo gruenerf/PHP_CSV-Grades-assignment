@@ -18,7 +18,7 @@ class GradeModel implements GradeModelInterface
 	 * @var int
 	 */
 
-	private static $counter = 0;
+	private static $counter = 1;
 
 	/**
 	 * Getters/Setters

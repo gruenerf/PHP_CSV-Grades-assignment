@@ -112,7 +112,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		while (!feof($fh)) {
 			$a = fgetcsv($fh);
 
-			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[0] == $student->getId()) {
+			if ($a[0] !== '' && $a[0] !== 'id' & $a[0] !== null & $a[0] == $student->getId()) {
 				array_push($objectArray, CourseRepository::getInstance()->getById($a[1]));
 			}
 		};
@@ -147,7 +147,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		$array_buffer = array();
 
 		foreach ($array as $grade) {
-			if ($this->transformGradeToInt($grade->getGrade()) > 0) {
+			if (self::transformGradeToInt($grade->getGrade()) > 1) {
 				array_push($array_buffer, $grade);
 			}
 		}
@@ -240,30 +240,52 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return 'no status';
 	}
 
-
 	/**
-	 * Transfers Grade into Integer Representation
-	 * @param $grade
-	 * @return int
+	 * Returns true if student is or has been registered to a course
+	 * @param StudentModel $student
+	 * @param CourseModel $course
+	 * @return bool
 	 */
-	public function transformGradeToInt($grade)
-	{
-		switch ($grade) {
-			case 'A' :
-				return 5;
-			case 'B' :
-				return 4;
-			case 'C' :
-				return 3;
-			case 'D' :
-				return 2;
-			case 'E' :
-				return 1;
-			case 'F' :
-				return 0;
+	public function checkIfStudentIsRegisteredForCourse(Student $student, Course $course){
+
+		if (file_exists(ROOT_PATH . "/data/student_course.txt")) {
+			$fh = fopen(ROOT_PATH . "/data/student_course.txt", "r");
+		} else {
+			new Error("student_course.txt does not exist");
+			return false;
 		}
 
-		return null;
+		while (!feof($fh)) {
+			$a = fgetcsv($fh);
+
+			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[0] == $student->getId() && $a[1] == $course->getId()) {
+				return true;
+			}
+		};
+
+		fclose($fh);
+
+		return false;
+	}
+
+	/**
+	 * Checks if student already been graded in a course
+	 * @param StudentModel $student
+	 * @param CourseModel $course
+	 * @return array
+	 */
+	public function checkIfStudentHasBeenGradedInCourse(Student $student, Course $course){
+		$array = $this->getAllGradeByStudent($student);
+
+		var_dump($array);
+
+		foreach($array as $grade){
+			if($grade->getCourseId() == $course->getId()){
+				return array(true, $grade->getGrade());
+			}
+		}
+
+		return array(false, null);
 	}
 
 } 

@@ -19,7 +19,7 @@ class StudentModel implements StudentModelInterface
 	 * @var int
 	 */
 
-	private static $counter = 0;
+	private static $counter = 1;
 
 
 	/**

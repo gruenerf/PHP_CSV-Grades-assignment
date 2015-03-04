@@ -36,7 +36,7 @@ class GradeController
 		return $this->gradeRepository->getAllSorted($attr, $dir);
 	}
 
-	function uploadGrades(){
-		
+	function uploadGrades(array $csvArray){
+		return $this->gradeRepository->uploadGrades($csvArray);
 	}
 } 

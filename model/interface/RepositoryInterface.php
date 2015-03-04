@@ -21,4 +21,12 @@ interface RepositoryInterface
 	 * @return mixed
 	 */
 	public function getAll();
+
+
+	/**
+	 * Transforms Grad(A-F) into int
+	 * @param $grade
+	 * @return mixed
+	 */
+	public function transformGradeToInt($grade);
 } 

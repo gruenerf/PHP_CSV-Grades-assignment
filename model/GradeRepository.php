@@ -119,4 +119,44 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 
 	}
 
+	public function uploadGrades(array $csvArray)
+	{
+		$notifications = array();
+
+		if (!empty($csvArray)) {
+			foreach ($csvArray as $grade) {
+				if ($student = StudentRepository::getInstance()->getById($grade[0])) {
+					if ($course = CourseRepository::getInstance()->getById($grade[1])) {
+						if (StudentRepository::getInstance()->checkIfStudentIsRegisteredForCourse($student, $course)) {
+							$gradedArray = StudentRepository::getInstance()->checkIfStudentHasBeenGradedInCourse($student, $course);
+							var_dump($gradedArray);
+
+							// Assuming Grade E+F means not passing the exam
+							if (!$gradedArray[0] | ($gradedArray[0] && self::transformGradeToInt($gradedArray[1]) < 2)) {
+
+								// Create grade
+								GradeRepository::getInstance()->create($grade[0], $grade[1], $grade[2]);
+							} else {
+								array_push($notifications, ErrorRepository::getInstance()->create('Student with id=' . $grade[0] . ' has already passed Course with id=' . $grade[1] . '.')->getErrormessage());
+							}
+						} else {
+							array_push($notifications, ErrorRepository::getInstance()->create('Student with id=' . $grade[0] . ' has not been registered for course with id=' . $grade[1] . '.')->getErrormessage());
+						}
+					} else {
+						array_push($notifications, ErrorRepository::getInstance()->create('Course with id=' . $grade[1] . ' does not exist!')->getErrormessage());
+					}
+				} else {
+					array_push($notifications, ErrorRepository::getInstance()->create('Student with id=' . $grade[0] . ' does not exist!')->getErrormessage());
+				}
+			}
+
+			array_push($notifications, 'Upload completed');
+			return $notifications;
+		} else {
+			array_push($notifications, ErrorRepository::getInstance()->create('No grades were uploaded!')->getErrormessage());
+			return $notifications;
+		}
+	}
+
+
 }

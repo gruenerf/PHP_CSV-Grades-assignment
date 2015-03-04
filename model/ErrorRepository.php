@@ -31,7 +31,15 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 
 	public function create($errormessage)
 	{
-		return new Error($errormessage);
+		if (is_array($errormessage)) {
+			$error_array = array();
+			foreach ($errormessage as $error) {
+				array_push($error_array, new Error($error));
+			}
+			return ($error_array);
+		} else {
+			return new Error($errormessage);
+		}
 	}
 
 	public function getById($id)

@@ -1,9 +1,9 @@
 id,name,ects,group,semester
-0,AI,10,1,ws14
-1,Norsk,8,1,ss15
-2,"Mobile App Design",5,1,ws14
-3,"Programming for the Web",10,1,ss15
-4,"Programming for the Web II",10,1,ws14
-5,"Programming for the Web II",10,2,ws13
-6,"Programming for the Web II",10,1,ss15
-7,"Programming for the Web II",10,2,ss15
+1,AI,10,1,ws14
+2,Norsk,8,2,ss15
+3,"Mobile App Design",5,1,ws14
+4,"Programming for the Web",10,2,ss15
+5,"Programming for the Web II",10,1,ws14
+6,"Programming for the Web II",10,2,ws13
+7,"Programming for the Web II",10,1,ss15
+8,"Programming for the Web II",10,2,ss15
