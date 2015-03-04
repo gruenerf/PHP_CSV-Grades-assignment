@@ -1,1 +1,2 @@
-7,3
+student_id,course_id
+1,3

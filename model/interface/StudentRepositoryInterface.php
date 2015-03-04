@@ -7,7 +7,7 @@ interface StudentRepositoryInterface extends RepositoryInterface
 {
 	public function create($name, $surname, $birthday);
 
-	public function addRegisteredCourse(Student $student, Course $course);
+	public function addCourse(Student $student, Course $course);
 
 	public function getCompletedCourse(Student $student);
 
@@ -19,7 +19,7 @@ interface StudentRepositoryInterface extends RepositoryInterface
 
 	public function getWorkload(Student $student);
 
-	public function geteGpa(Student $student);
+	public function getGpa(Student $student);
 
 	public function getStatus(Student $student);
 

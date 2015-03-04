@@ -33,19 +33,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
 	public function create($name, $ects, $group, $semester)
 	{
-		if ($semester instanceof DateTime) {
-			$semesterBuffer = self::dateToSemester($semester);
-			$currentSemester = self::getCurrentSemester();
-
-			// The current semester is the latest semester courses can be asigned to. Courses in the future are set back to current semester.
-			// Courses in the past are set as usual.
-			if (self::compareSemesterDate($semesterBuffer, $currentSemester)) {
-				$semester = $semesterBuffer;
-			} else {
-				$semester = $currentSemester;
-			}
-		}
-
 		return new Course($name, $ects, $group, $semester);
 	}
 
@@ -58,7 +45,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 				return $object;
 			}
 		}
-
 		return null;
 	}
 
@@ -85,4 +71,68 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
 		return $objectArray;
 	}
-} 
+
+	public function getCurrentCourses()
+	{
+		$array = $this->getAll();
+
+		$array_buffer = array();
+
+		foreach ($array as $course) {
+			if ($course->getSemester() == self::getCurrentSemester()) {
+				array_push($array_buffer, $course);
+			}
+		}
+
+		return $array_buffer;
+	}
+
+	public function getCurrentCoursesGroupsAndPreviously()
+	{
+		$array = $this->getAll();
+		$arrayBuffer = array();
+
+		foreach ($array as $course) {
+			if (!array_key_exists($course->getName(), $arrayBuffer)) {
+				$tempArray = array();
+				$tempArray['name'] = $course->getName();
+				$tempArray['ects'] = $course->getEcts();
+				$tempArray['groups'] = $this->getNumberOfCurrentGroups($course);
+				$tempArray['previously'] = $this->getNumberPreviouslyTaught($course);
+
+				$arrayBuffer[$course->getName()] = $tempArray;
+			}
+		}
+
+		return $arrayBuffer;
+	}
+
+	public function getNumberOfCurrentGroups(Course $course)
+	{
+		$array = $this->getCurrentCourses();
+
+		$counter = 0;
+		foreach ($array as $course2) {
+			if ($course->getName() == $course2->getName() && $course2->getSemester() == self::getCurrentSemester()) {
+				$counter++;
+			}
+		}
+
+		return $counter;
+	}
+
+	public function getNumberPreviouslyTaught(Course $course)
+	{
+		$array = $this->getAll();
+		$counter = 0;
+		foreach ($array as $course2) {
+			if ($course->getName() == $course2->getName()) {
+				$counter++;
+			}
+		}
+
+		return $counter - $this->getNumberOfCurrentGroups($course);
+	}
+
+
+}

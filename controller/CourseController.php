@@ -5,29 +5,40 @@ class CourseController
 {
 	private $courseRepository;
 
-	public function __construct(CourseRepositoryInterface $courseRepository)
+	function __construct(CourseRepositoryInterface $courseRepository)
 	{
 		$this->courseRepository = $courseRepository;
 	}
 
-	function newCourse($name, $ects, $group, $semester)
+	function create($name, $ects, $group, $semester)
 	{
 		return $this->courseRepository->create($name, $ects, $group, $semester);
 	}
 
-	function updateCourse(Course $course)
+	function update(Course $course)
 	{
 		$this->courseRepository->update($course);
 	}
 
-	function getAllCourse()
+	function getById($id){
+		return $this->courseRepository->getById($id);
+	}
+
+	function getAll()
 	{
 		return $this->courseRepository->getAll();
 	}
 
-	// TODO ????
-	function getAllCourseCurrent()
+	function getNumberOfGroups(Course $course)
 	{
-		return Database::getInstance()->getAll('Course', 'current');
+		return $this->courseRepository->getNumberOfCurrentGroups($course);
+	}
+
+	function getNumberPreviouslyTaught(Course $course){
+		return $this->courseRepository->getNumberPreviouslyTaught($course);
+	}
+
+	function getCurrentCoursesGroupsAndPreviously(){
+		return $this->courseRepository->getCurrentCoursesGroupsAndPreviously();
 	}
 } 

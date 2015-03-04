@@ -3,6 +3,7 @@
 /**
  * Class CourseModel
  */
+use ErrorModel as Error;
 class CourseModel implements CourseModelInterface
 {
 	/**
@@ -86,7 +87,23 @@ class CourseModel implements CourseModelInterface
 		$this->name = $name;
 		$this->ects = $ects;
 		$this->group = $group;
-		$this->semester = $semester;
+
+		// If Semester is passed by date transform it
+		if ($semester instanceof DateTime) {
+			$semesterBuffer = CourseRepository::getInstance()->dateToSemester($semester);
+			$currentSemester = CourseRepository::getInstance()->getCurrentSemester();
+
+			// The current semester is the latest semester courses can be asigned to. Courses in the future are set back to current semester.
+			// Courses in the past are set as usual.
+			if (CourseRepository::getInstance()->compareSemesterDate($currentSemester, $semesterBuffer)) {
+				$this->semester = $semesterBuffer;
+			} else {
+				$this->semester = $currentSemester;
+			}
+		}
+		else{
+			$this->semester = $semester;
+		}
 
 		if ($save) {
 			$this->id = $this->save();
@@ -130,11 +147,11 @@ class CourseModel implements CourseModelInterface
 		}
 
 		if (!unlink(ROOT_PATH . "/data/course.txt")) {
-			new ErrorModel("Error deleting course.txt");
+			new Error("Error deleting course.txt");
 		}
 
 		foreach ($objectArray as $object) {
-			$this->save($object);
+			$object->save($object);
 		}
 	}
 

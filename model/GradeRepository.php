@@ -9,7 +9,7 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 	/**
 	 * static instance
 	 */
-	private static $lecturerRepository = null;
+	private static $gradeRepository = null;
 
 
 	/**
@@ -24,11 +24,11 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 	 */
 	public static function getInstance()
 	{
-		if (self::$lecturerRepository == null) {
-			self::$lecturerRepository = new LecturerRepository();
+		if (self::$gradeRepository == null) {
+			self::$gradeRepository = new GradeRepository();
 		}
 
-		return self::$lecturerRepository;
+		return self::$gradeRepository;
 	}
 
 	public function create($studentId, $courseId, $grade)
@@ -71,6 +71,52 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 		fclose($fh);
 
 		return $objectArray;
+	}
+
+	public function getAllSorted($attr, $dir)
+	{
+		$array = $this->getAll();
+
+		$arrayBuffer = array();
+
+		foreach ($array as $grade) {
+			$tempArray = array();
+			$tempArray['title'] = CourseRepository::getInstance()->getById($grade->getCourseId())->getName();
+			$tempArray['group'] = CourseRepository::getInstance()->getById($grade->getCourseId())->getGroup();
+			$tempArray['name'] = StudentRepository::getInstance()->getById($grade->getStudentId())->getName();
+			$tempArray['surname'] = StudentRepository::getInstance()->getById($grade->getStudentId())->getSurname();
+			$tempArray['semester'] = $grade->getSemester();
+			$tempArray['grade'] = $grade->getGrade();
+
+			array_push($arrayBuffer, $tempArray);
+		}
+
+		if ($dir == 'asc') {
+			usort($arrayBuffer, function ($a, $b) use ($attr) {
+				if ($attr == 'title' | $attr == 'name' | $attr == 'surname' | $attr == 'grade') {
+					return strcmp($a[$attr], $b[$attr]);
+				} elseif ($attr == 'semester') {
+					return self::compareSemesterDate($a[$attr], $b[$attr]);
+				} elseif ($attr == 'group') {
+					return $a[$attr] - $b[$attr];
+				}
+			});
+			return $arrayBuffer;
+		} elseif ($dir == 'desc') {
+			usort($arrayBuffer, function ($a, $b) use ($attr) {
+				if ($attr == 'title' | $attr == 'name' | $attr == 'surname' | $attr == 'grade') {
+					return strcmp($b[$attr], $a[$attr]);
+				} elseif ($attr == 'semester') {
+					return self::compareSemesterDate($b[$attr], $a[$attr]);
+				} elseif ($attr == 'group') {
+					return $b[$attr] - $a[$attr];
+				}
+			});
+			return $arrayBuffer;
+		} else {
+			return $arrayBuffer;
+		}
+
 	}
 
 }

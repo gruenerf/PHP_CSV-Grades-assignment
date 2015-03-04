@@ -81,14 +81,14 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		if (file_exists(ROOT_PATH . "/data/grade.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/grade.txt", "r");
 		} else {
-			new ErrorModel("grade.txt does not exist");
+			new Error("grade.txt does not exist");
 			return $objectArray;
 		}
 
 		while (!feof($fh)) {
 			$a = fgetcsv($fh);
 
-			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[1] == $this->getId()) {
+			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[1] == $student->getId()) {
 				array_push($objectArray, GradeRepository::getInstance()->getById($a[0]));
 			}
 		};
@@ -105,7 +105,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		if (file_exists(ROOT_PATH . "/data/student_course.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/student_course.txt", "r");
 		} else {
-			new ErrorModel("student_course.txt does not exist");
+			new Error("student_course.txt does not exist");
 			return $objectArray;
 		}
 
@@ -125,7 +125,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	/**
 	 * @param Course $course
 	 */
-	public function addRegisteredCourse(Student $student, Course $course)
+	public function addCourse(Student $student, Course $course)
 	{
 		if (file_exists(ROOT_PATH . "/data/student_course.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/student_course.txt", 'a') or die ('Failed!');

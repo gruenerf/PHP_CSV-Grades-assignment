@@ -5,7 +5,7 @@
  */
 use ErrorModel as Error;
 
-class GradeModel extends BaseModel implements GradeModelInterface
+class GradeModel implements GradeModelInterface
 {
 	/**
 	 * Private variables
@@ -87,7 +87,7 @@ class GradeModel extends BaseModel implements GradeModelInterface
 		$this->studentId = $studentId;
 		$this->courseId = $courseId;
 		$this->grade = $grade;
-		$this->year = CourseRepository::getInstance()->getById($courseId)->getSemester();
+		$this->semester = CourseRepository::getInstance()->getById($courseId)->getSemester();
 
 		if ($save) {
 			$this->id = $this->save();
@@ -151,6 +151,6 @@ class GradeModel extends BaseModel implements GradeModelInterface
 			$id = $this->getId();
 		}
 
-		return array($id, $this->getStudentId(), $this->getCourseId(), $this->getGrade(), $this->getYear());
+		return array($id, $this->getStudentId(), $this->getCourseId(), $this->getGrade(), $this->getSemester());
 	}
 }

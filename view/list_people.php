@@ -25,14 +25,31 @@
 	</tr>
 	</thead>
 	<?php
-	$array = $lecturerController->getAllLecturer();
-	foreach ($array as $lecturer) {
-		$currCourses = count($lecturer->getCurrentCourse());
-		$prevCourses = count($lecturer->getPreviousCourse());
-
-		echo "<tr><td>" . $lecturer->getTitle() . "</td><td>" . $lecturer->getName() . "</td><td>" . $lecturer->getSurname() . "</td><td>" . $lecturer->getBirthday() . "</td><td>" . $lecturerController->getWorkload($lecturer) . "</td><td>" . $currCourses . "</td><td>" . $prevCourses . "</td></tr>";
-	}
-	?>
+	foreach ($lecturerController->getAll() as $lecturer): ?>
+		<tr>
+			<td>
+				<?= $lecturer->getTitle(); ?>
+			</td>
+			<td>
+				<?= $lecturer->getName(); ?>
+			</td>
+			<td>
+				<?= $lecturer->getSurname(); ?>
+			</td>
+			<td>
+				<?= $lecturer->getBirthday(); ?>
+			</td>
+			<td>
+				<?= $lecturerController->getWorkload($lecturer); ?>
+			</td>
+			<td>
+				<?= count($lecturerController->getAllCourseByLecturerCurrent($lecturer)); ?>
+			</td>
+			<td>
+				<?= count($lecturerController->getAllCourseByLecturerPrevious($lecturer)); ?>
+			</td>
+		</tr>
+	<?php endforeach; ?>
 </table>
 
 <!-- Student Table -->
@@ -50,13 +67,34 @@
 	</tr>
 	</thead>
 	<?php
-	$array = $studentController->getAllStudent();
-	foreach ($array as $student) {
-		$regCourses = count($studentController->getAllRegisteredCourse($student));
-		$compCourses = count($studentController->getAllCompletedCourse($student));
-		echo "<tr><td>" . $student->getName() . "</td><td>" . $student->getSurname() . "</td><td>" . $student->getBirthday() . "</td><td>" . $studentController->getWorkload($student) . "</td><td>" . $studentController->getGpa($student) . "</td><td>" . $studentController->getStatus($student) . "</td><td>" . $regCourses . "</td><td>" . $compCourses . "</td></tr>";
-	}
-	?>
+	foreach ($studentController->getAll() as $student): ?>
+		<tr>
+			<td>
+				<?= $student->getName(); ?>
+			</td>
+			<td>
+				<?= $student->getSurname(); ?>
+			</td>
+			<td>
+				<?= $student->getBirthday(); ?>
+			</td>
+			<td>
+				<?= $studentController->getWorkload($student); ?>
+			</td>
+			<td>
+				<?= $studentController->getGpa($student); ?>
+			</td>
+			<td>
+				<?= $studentController->getStatus($student); ?>
+			</td>
+			<td>
+				<?= count($studentController->getAllRegisteredCourse($student)); ?>
+			</td>
+			<td>
+				<?= count($studentController->getAllCompletedCourse($student)); ?>
+			</td>
+		</tr>
+	<?php endforeach; ?>
 </table>
 </body>
 </html>

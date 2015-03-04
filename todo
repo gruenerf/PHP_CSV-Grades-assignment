@@ -4,16 +4,17 @@ basecontroller for routing
 	view would be the tables ( check if those variables are set to preven alse code)
 
 
-______________
+_____________
 
-Make repositories/controllers singleton
-Remove Database refrences
-actualize controllers
-
-test list people
-
+Timestamp shit
 Comment all models
 Check for todos
 Look through files for errors
 
 write readme
+
+
+____
+Nice to have:
+no need for title with professor
+delete functions for mapper

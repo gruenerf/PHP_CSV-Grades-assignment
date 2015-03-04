@@ -1,6 +1,6 @@
 id,title,name,surname,birthday,workload
-21,Dr.,FooBar,Junke,20.03.1965,0
-22,Prof.,Kenny,McCormick,20.03.1935,0
-23,Dr.,Finn,"The Human",20.01.1985,0
-24,Dr.,Jake,"The Dog",27.01.1976,0
-25,Dr.,Spongebob,Squarepants,20.03.1965,0
+0,Dr.,FooBar,Junke,20.03.1965,undefined
+1,Prof.,Kenny,McCormick,20.03.1935,undefined
+2,Dr.,Finn,"The Human",20.01.1985,undefined
+3,Dr.,Jake,"The Dog",27.01.1976,undefined
+4,Dr.,Spongebob,Squarepants,20.03.1965,undefined

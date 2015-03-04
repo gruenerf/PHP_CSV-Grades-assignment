@@ -17,20 +17,21 @@ require("../config.php");
 		<td>Times previously taught</td>
 	</tr>
 	</thead>
-	<?php foreach ($courseController->getAllCourse() as $course):?>
+	<?php foreach ($courseController->getCurrentCoursesGroupsAndPreviously() as $course):?>
 		<tr>
 			<td>
-				<?= $lecturer->getTitle(); ?>
+				<?= $course['name']; ?>
 			</td>
 			<td>
-				<?= $lecturer->getName(); ?>
+				<?= $course['ects']; ?>
+			</td>
+			<td>
+				<?= $course['groups']; ?>
+			</td>
+			<td>
+				<?= $course['previously'] ?>
 			</td>
 		</tr>
-
-		$currCourses = count($lecturer->getCurrentCourse());
-		$prevCourses = count($lecturer->getPreviousCourse());
-		echo "<tr><td>" . $lecturer->getTitle() . "</td><td>" . $lecturer->getName() . "</td><td>" . $lecturer->getSurname() . "</td><td>" . $lecturer->getBirthday() . "</td><td>" . $lecturerController->getWorkload($lecturer) . "</td><td>" . $currCourses . "</td><td>" . $prevCourses . "</td></tr>";
-
 	<?php endforeach; ?>
 </table>
 

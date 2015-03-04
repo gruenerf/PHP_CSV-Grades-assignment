@@ -4,7 +4,6 @@ use GradeModel as Grade;
 
 class GradeController
 {
-
 	private $gradeRepository;
 
 	public function __construct(GradeRepositoryInterface $gradeRepository)
@@ -12,18 +11,32 @@ class GradeController
 		$this->gradeRepository = $gradeRepository;
 	}
 
-	function newGrade($student, $course, $grade)
+	function create($student, $course, $grade)
 	{
 		return $this->gradeRepository->create($student, $course, $grade);
 	}
 
-	function updateGrade(Grade $grade)
+	function update(Grade $grade)
 	{
 		return $this->gradeRepository->update($grade);
 	}
 
-	function getAllGrade()
+	function getById($id)
+	{
+		return $this->gradeRepository->getById($id);
+	}
+
+	function getAll()
 	{
 		return $this->gradeRepository->getAll();
+	}
+
+	function getAllSorted($attr = null, $dir = null)
+	{
+		return $this->gradeRepository->getAllSorted($attr, $dir);
+	}
+
+	function uploadGrades(){
+		
 	}
 } 

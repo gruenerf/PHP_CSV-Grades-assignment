@@ -12,17 +12,21 @@ class LecturerController
 		$this->lecturerRepository = $lecturerRepository;
 	}
 
-	function newLecturer($title, $surname, $name, $birthday)
+	function create($title, $surname, $name, $birthday)
 	{
-		$this->lecturerRepository->create($title, $surname, $name, $birthday);
+		return $this->lecturerRepository->create($title, $surname, $name, $birthday);
 	}
 
-	function updateLecturer(Lecturer $lecturer)
+	function update(Lecturer $lecturer)
 	{
 		$this->lecturerRepository->update($lecturer);
 	}
 
-	function getAllLecturer()
+	function getById($id){
+		return $this->lecturerRepository->getById($id);
+	}
+
+	function getAll()
 	{
 		return $this->lecturerRepository->getAll();
 	}

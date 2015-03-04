@@ -1,6 +1,6 @@
 <?php
 
-class ErrorModel extends BaseModel implements ErrorModelInterface
+class ErrorModel implements ErrorModelInterface
 {
 
 	/**

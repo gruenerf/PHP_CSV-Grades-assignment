@@ -80,10 +80,10 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 	{
 		$objectArray = array();
 
-		if (file_exists(ROOT_PATH . "/data/lecturer_course")) {
+		if (file_exists(ROOT_PATH . "/data/lecturer_course.txt")) {
 			$fh = fopen(ROOT_PATH . "/data/lecturer_course.txt", "r");
 		} else {
-			new ErrorModel("lecturer_course.txt does not exist");
+			new Error("lecturer_course.txt does not exist");
 			return $objectArray;
 		}
 

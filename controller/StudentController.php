@@ -12,17 +12,21 @@ class StudentController
 		$this->studentRepository = $studentRepository;
 	}
 
-	function newStudent($surname, $name, $birthday)
+	function create($surname, $name, $birthday)
 	{
 		return $this->studentRepository->create($surname, $name, $birthday);
 	}
 
-	function updateStudent(Student $student)
+	function update(Student $student)
 	{
 		$this->studentRepository->update($student);
 	}
 
-	function getAllStudent()
+	function getById($id){
+		return $this->studentRepository->getById($id);
+	}
+
+	function getAll()
 	{
 		return $this->studentRepository->getAll();
 	}
@@ -39,12 +43,12 @@ class StudentController
 
 	function getAllRegisteredCourse(Student $student)
 	{
-		return $this->studentRepository->addRegisteredCourse($student);
+		return $this->studentRepository->getCurrentCourse($student);
 	}
 
-	function addRegisteredCourse(Student $student, Course $course)
+	function addCourse(Student $student, Course $course)
 	{
-		$this->studentRepository->addRegisteredCourse($student, $course);
+		$this->studentRepository->addCourse($student, $course);
 	}
 
 	function getWorkload(Student $student)
