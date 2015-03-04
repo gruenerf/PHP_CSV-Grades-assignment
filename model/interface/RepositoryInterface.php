@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Interface RepositoryInterface
+ */
 interface RepositoryInterface
 {
 	/**

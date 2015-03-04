@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Controller Class for Routing
+ *
+ * Class RouteController
+ */
 class RouteController
 {
+
 
 	private $page_title, $view;
 
@@ -14,16 +20,25 @@ class RouteController
 		return $this->page_title;
 	}
 
+	/**
+	 * @param $page_title
+	 */
 	public function setPageTitle($page_title)
 	{
 		$this->page_title = $page_title;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getView()
 	{
 		return $this->view;
 	}
 
+	/**
+	 * @param $view
+	 */
 	public function setView($view)
 	{
 		$this->view = $view;
@@ -45,12 +60,12 @@ class RouteController
 			'upload_grades'
 		);
 
+		// check if the parameter is a valid route
 		if(!in_array($route, $possibleRoutes)){
 			$route = "list_courses";
 		}
-		// Get the view
-		$name = $route;
 
+		// holds all views and pagetitles
 		$parameters = array(
 			'page_title' => array(
 				'list_courses' => 'Course List',
@@ -65,7 +80,7 @@ class RouteController
 			));
 
 
-		$this->setPageTitle($parameters['page_title'][$name]);
-		$this->setView($parameters['view_title'][$name]);
+		$this->setPageTitle($parameters['page_title'][$route]);
+		$this->setView($parameters['view_title'][$route]);
 	}
 } 

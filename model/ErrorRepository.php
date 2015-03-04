@@ -29,6 +29,11 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 		return self::$errorRepository;
 	}
 
+	/**
+	 * Creates one or many error objects
+	 * @param $errormessage
+	 * @return array|ErrorModel|mixed
+	 */
 	public function create($errormessage)
 	{
 		if (is_array($errormessage)) {
@@ -42,6 +47,11 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 		}
 	}
 
+	/**
+	 * Returns Errorobject with certain id
+	 * @param $id
+	 * @return mixed|null
+	 */
 	public function getById($id)
 	{
 		$array = $this->getAll();
@@ -55,6 +65,10 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 		return null;
 	}
 
+	/**
+	 * Returns all Errorobjects
+	 * @return array|mixed
+	 */
 	public function getAll()
 	{
 		$objectArray = array();

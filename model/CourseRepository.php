@@ -31,11 +31,24 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return self::$courseRepository;
 	}
 
+	/**
+	 * Creates a course object
+	 * @param $name
+	 * @param $ects
+	 * @param $group
+	 * @param $semester
+	 * @return CourseModel|mixed
+	 */
 	public function create($name, $ects, $group, $semester)
 	{
 		return new Course($name, $ects, $group, $semester);
 	}
 
+	/**
+	 * Returns courseobject with certain id
+	 * @param $id
+	 * @return mixed|null
+	 */
 	public function getById($id)
 	{
 		$array = $this->getAll();
@@ -48,6 +61,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return null;
 	}
 
+	/**
+	 * Returns all Courseobjects
+	 * @return array|mixed
+	 */
 	public function getAll()
 	{
 		$objectArray = array();
@@ -72,6 +89,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return $objectArray;
 	}
 
+	/**
+	 * Returns all courses of the current semester
+	 * @return array|mixed
+	 */
 	public function getCurrentCourses()
 	{
 		$array = $this->getAll();
@@ -87,6 +108,10 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return $array_buffer;
 	}
 
+	/**
+	 * returns an array with the name of the course, ects, the number of groups and how often it was previously taught
+	 * @return array|mixed
+	 */
 	public function getCurrentCoursesGroupsAndPreviously()
 	{
 		$array = $this->getAll();
@@ -107,6 +132,11 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return $arrayBuffer;
 	}
 
+	/**
+	 * Returns number of current groups
+	 * @param CourseModel $course
+	 * @return int|mixed
+	 */
 	public function getNumberOfCurrentGroups(Course $course)
 	{
 		$array = $this->getCurrentCourses();
@@ -121,6 +151,11 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return $counter;
 	}
 
+	/**
+	 * Returns number how often course was previously taught
+	 * @param CourseModel $course
+	 * @return int|mixed
+	 */
 	public function getNumberPreviouslyTaught(Course $course)
 	{
 		$array = $this->getAll();

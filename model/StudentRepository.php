@@ -31,11 +31,23 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return self::$studentRepository;
 	}
 
+	/**
+	 * Creates a new studentObject
+	 * @param $name
+	 * @param $surname
+	 * @param $birthday
+	 * @return mixed|StudentModel
+	 */
 	public function create($name, $surname, $birthday)
 	{
 		return new Student($name, $surname, $birthday);
 	}
 
+	/**
+	 * Returns a studentObject with a certain id
+	 * @param $id
+	 * @return mixed|null
+	 */
 	public function getById($id)
 	{
 		$array = $this->getAll();
@@ -49,6 +61,10 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return null;
 	}
 
+	/**
+	 * Returns all studentobjects
+	 * @return array|mixed
+	 */
 	public function getAll()
 	{
 		$objectArray = array();
@@ -74,6 +90,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return $objectArray;
 	}
 
+	/**
+	 * Returns all grades of a student
+	 * @param StudentModel $student
+	 * @return array|mixed
+	 */
 	public function getAllGradeByStudent(Student $student)
 	{
 		$objectArray = array();
@@ -98,6 +119,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return $objectArray;
 	}
 
+	/**
+	 * Returns all courses of a student (prev and current)
+	 * @param StudentModel $student
+	 * @return array|mixed
+	 */
 	public function getAllCourseByStudent(Student $student)
 	{
 		$objectArray = array();
@@ -123,7 +149,10 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	}
 
 	/**
-	 * @param Course $course
+	 * Adds a course to a student
+	 * @param StudentModel $student
+	 * @param CourseModel $course
+	 * @return mixed|void
 	 */
 	public function addCourse(Student $student, Course $course)
 	{
@@ -139,7 +168,10 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 	}
 
 	/**
-	 * @return array
+	 * Returns all completed courses of a student
+	 * means all courses passed (Grade of D or better)
+	 * @param StudentModel $student
+	 * @return array|mixed
 	 */
 	public function getCompletedCourse(Student $student)
 	{
@@ -155,6 +187,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return $array_buffer;
 	}
 
+	/**
+	 * Returns all courses a student visits in the current semester
+	 * @param StudentModel $student
+	 * @return array|mixed
+	 */
 	public function getCurrentCourse(Student $student)
 	{
 		$array = $this->getAllCourseByStudent($student);
@@ -171,18 +208,19 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
 	/**
 	 * Returns Workload
-	 * @return int
+	 * @param StudentModel $student
+	 * @return int|mixed
 	 */
 	public function getWorkload(Student $student)
 	{
-		$workload = 0;
+		$ects = 0;
 		$courses = $this->getCurrentCourse($student);
 
 		foreach ($courses as $course) {
-			$workload += $course->getEcts();
+			$ects += $course->getEcts();
 		}
 
-		$result = $workload * 1.6;
+		$result = $ects * 1.6;
 
 		// Update Database
 		$student->setWorkload($result);
@@ -193,7 +231,8 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
 	/**
 	 * Returns GPA as float
-	 * @return float
+	 * @param StudentModel $student
+	 * @return int|mixed|string
 	 */
 	public function getGpa(Student $student)
 	{
@@ -222,7 +261,8 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
 	/**
 	 * Transfers GPA to String Representation of Status
-	 * @return string
+	 * @param StudentModel $student
+	 * @return mixed|string
 	 */
 	public function getStatus(Student $student)
 	{

@@ -34,11 +34,24 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return self::$lecturerRepository;
 	}
 
+	/**
+	 * Creates a Lecturer Object
+	 * @param $title
+	 * @param $name
+	 * @param $surname
+	 * @param $birthday
+	 * @return LecturerModel|mixed
+	 */
 	public function create($title, $name, $surname, $birthday)
 	{
 		return new Lecturer($title, $name, $surname, $birthday);
 	}
 
+	/**
+	 * Returns a lecturerobject with a certain id
+	 * @param $id
+	 * @return mixed|null
+	 */
 	public function getById($id)
 	{
 		$array = $this->getAll();
@@ -52,6 +65,10 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return null;
 	}
 
+	/**
+	 * Returns an array with all lecturerObjects
+	 * @return array|mixed
+	 */
 	public function getAll()
 	{
 		$objectArray = array();
@@ -76,6 +93,11 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return $objectArray;
 	}
 
+	/**
+	 * Returns all courses taught by a lecturer
+	 * @param LecturerModel $lecturer
+	 * @return array|mixed
+	 */
 	public function getAllCourseByLecturer(Lecturer $lecturer)
 	{
 		$objectArray = array();
@@ -101,7 +123,12 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return $objectArray;
 	}
 
-
+	/**
+	 * Adds a course to a lecturer
+	 * @param LecturerModel $lecturer
+	 * @param CourseModel $course
+	 * @return mixed|void
+	 */
 	public function addCourse(Lecturer $lecturer, Course $course)
 	{
 		if (file_exists(ROOT_PATH . "/data/lecturer_course.txt")) {
@@ -115,7 +142,11 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		fclose($fh);
 	}
 
-
+	/**
+	 * Returns all previously taught courses by a lecturer
+	 * @param LecturerModel $lecturer
+	 * @return array|mixed
+	 */
 	public function getPreviousCourse(Lecturer $lecturer)
 	{
 		$array = LecturerRepository::getInstance()->getAllCourseByLecturer($lecturer);
@@ -130,7 +161,11 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return $array_buffer;
 	}
 
-
+	/**
+	 * Returns all currently taught courses of a lecturer
+	 * @param LecturerModel $lecturer
+	 * @return array|mixed
+	 */
 	public function getCurrentCourse(Lecturer $lecturer)
 	{
 		$array = LecturerRepository::getInstance()->getAllCourseByLecturer($lecturer);
@@ -145,25 +180,30 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 		return $array_buffer;
 	}
 
-
+	/**
+	 * calculates and returns the workload of a lecturer
+	 * @param LecturerModel $lecturer
+	 * @return int|mixed
+	 */
 	public function getWorkload(Lecturer $lecturer)
 	{
-		$workload = 0;
+		$ects = 0;
 
 		$array = LecturerRepository::getInstance()->getAllCourseByLecturer($lecturer);
 		$array_buffer = array();
 
 		foreach ($array as $course) {
+			//check for current courses
 			if ($course->getSemester() == self::getCurrentSemester()) {
 				array_push($array_buffer, $course);
 			}
 		}
 
 		foreach ($array_buffer as $course) {
-			$workload += $course->getEcts();
+			$ects += $course->getEcts();
 		}
 
-		$result = $workload * 5;
+		$result = $ects * 5;
 
 		// Update Database
 		$lecturer->setWorkload($result);
