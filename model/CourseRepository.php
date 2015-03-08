@@ -44,6 +44,30 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 		return new Course($name, $ects, $group, $semester);
 	}
 
+
+	/**
+	 * Returns the highest id of the csv file
+	 * @return int
+	 */
+	public function getHighestId()
+	{
+		if (file_exists(ROOT_PATH . "/data/course.txt")) {
+			$rows = file(ROOT_PATH . "/data/course.txt");
+		} else {
+			new Error("course.txt does not exist");
+			return 0;
+		}
+
+		$last_row = array_pop($rows);
+		$data = str_getcsv($last_row);
+
+		if($data[0] == 'id'){
+			return 0;
+		}
+
+		return $data[0];
+	}
+
 	/**
 	 * Returns courseobject with certain id
 	 * @param $id

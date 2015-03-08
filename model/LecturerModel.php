@@ -114,11 +114,17 @@ class LecturerModel implements LecturerModelInterface
 			fputcsv($fh, array('id', 'title', 'name', 'surname', 'birthday', 'workload'));
 		}
 
+		// Only raise counter if $counterCheck = NULL that means the object is saved the first time
+		// Prevents problems with update function
+		$counterCheck = $this->getId();
+
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return $_SESSION['lecturerId']++;
+		if (!$counterCheck) {
+			return $_SESSION['lecturerId'];
+		}
 	}
 
 	/**
@@ -153,10 +159,10 @@ class LecturerModel implements LecturerModelInterface
 	{
 		if ($this->getId() === NULL) {
 			if (isset($_SESSION['lecturerId'])) {
-				$id = $_SESSION['lecturerId'];
+				$id = ++$_SESSION['lecturerId'];
 			} else {
-				$_SESSION['lecturerId'] = 1;
-				$id = $_SESSION['lecturerId'];
+				$_SESSION['lecturerId'] = LecturerRepository::getInstance()->getHighestId();
+				$id = ++$_SESSION['lecturerId'];
 			}
 		} else {
 			$id = $this->getId();

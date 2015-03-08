@@ -1,6 +1,6 @@
 id,title,name,surname,birthday,workload
-1,Dr.,Eric,Cartman,20.03.1965,undefined
-2,Prof.,Kenny,McCormick,20.03.1935,undefined
-3,Dr.,Finn,"The Human",20.01.1985,undefined
-4,Dr.,Jake,"The Dog",27.01.1976,undefined
-5,Dr.,Spongebob,Squarepants,20.03.1965,undefined
+1,Dr.,Eric,Cartman,20.03.1965,190
+2,Prof.,Kenny,McCormick,20.03.1935,50
+3,Dr.,Finn,"The Human",20.01.1985,90
+4,Dr.,Jake,"The Dog",27.01.1976,50
+5,Dr.,Spongebob,Squarepants,20.03.1965,50

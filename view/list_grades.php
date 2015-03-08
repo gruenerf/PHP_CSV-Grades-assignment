@@ -1,3 +1,4 @@
+<h2>Grades</h2>
 <table>
 	<thead>
 	<tr>

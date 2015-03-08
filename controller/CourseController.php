@@ -5,7 +5,7 @@ use CourseModel as Course;
 /**
  * Class CourseController
  */
-class CourseController
+class CourseController implements CourseControllerInterface
 {
 	/**
 	 * @var CourseRepositoryInterface

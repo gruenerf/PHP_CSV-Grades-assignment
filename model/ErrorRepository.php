@@ -30,21 +30,36 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 	}
 
 	/**
-	 * Creates one or many error objects
+	 * Creates one error object
 	 * @param $errormessage
-	 * @return array|ErrorModel|mixed
+	 * @return ErrorModel|mixed
 	 */
 	public function create($errormessage)
 	{
-		if (is_array($errormessage)) {
-			$error_array = array();
-			foreach ($errormessage as $error) {
-				array_push($error_array, new Error($error));
-			}
-			return ($error_array);
+		return new Error($errormessage);
+	}
+
+	/**
+	 * Returns the highest id of the csv file
+	 * @return int
+	 */
+	public function getHighestId()
+	{
+		if (file_exists(ROOT_PATH . "/data/error.txt")) {
+			$rows = file(ROOT_PATH . "/data/error.txt");
 		} else {
-			return new Error($errormessage);
+			new Error("error.txt does not exist");
+			return 0;
 		}
+
+		$last_row = array_pop($rows);
+		$data = str_getcsv($last_row);
+
+		if ($data[0] == 'id') {
+			return 0;
+		}
+
+		return $data[0];
 	}
 
 	/**

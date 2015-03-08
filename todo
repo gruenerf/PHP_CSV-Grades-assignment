@@ -1,7 +1,14 @@
-Comment all models
-Look through files for errors
-
-____
 Nice to have:
 no need for title with professor
 delete functions for mapper
+
+More checking for types
+get the validation out of the views
+update upload view
+assign active as class to current menu item
+change folder names
+update grade txt
+show ids of students courses and lecturers
+put grade validation in grade repo
+make includes mores beautiful
+headline for grade page                             X

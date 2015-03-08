@@ -8,7 +8,6 @@ interface RepositoryInterface
 	/**
 	 * Updates a certain object in the database
 	 * @param $o
-	 * @return mixed
 	 */
 	public function update($o);
 
@@ -25,11 +24,16 @@ interface RepositoryInterface
 	 */
 	public function getAll();
 
-
 	/**
 	 * Transforms Grad(A-F) into int
 	 * @param $grade
 	 * @return mixed
 	 */
 	public function transformGradeToInt($grade);
+
+	/**
+	 * Returns highest id in csv
+	 * @return mixed
+	 */
+	public function getHighestId();
 } 

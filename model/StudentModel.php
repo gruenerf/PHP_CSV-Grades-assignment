@@ -114,11 +114,17 @@ class StudentModel implements StudentModelInterface
 			fputcsv($fh, array('id', 'name', 'surname', 'birthday', 'workload', 'gpa'));
 		}
 
+		// Only raise counter if $counterCheck = NULL that means the object is saved the first time
+		// Prevents problems with update function
+		$counterCheck = $this->getId();
+
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return $_SESSION['studentId']++;
+		if (!$counterCheck) {
+			return $_SESSION['studentId'];
+		}
 	}
 
 	/**
@@ -151,14 +157,12 @@ class StudentModel implements StudentModelInterface
 	 */
 	public function toArray()
 	{
-
-
 		if ($this->getId() === NULL) {
 			if (isset($_SESSION['studentId'])) {
-				$id = $_SESSION['studentId'];
+				$id = ++$_SESSION['studentId'];
 			} else {
-				$_SESSION['studentId'] = 1;
-				$id = $_SESSION['studentId'];
+				$_SESSION['studentId'] = StudentRepository::getInstance()->getHighestId();
+				$id = ++$_SESSION['studentId'];
 			}
 		} else {
 			$id = $this->getId();

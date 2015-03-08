@@ -48,6 +48,29 @@ class LecturerRepository extends BaseRepository implements LecturerRepositoryInt
 	}
 
 	/**
+	 * Returns the highest id of the csv file
+	 * @return int
+	 */
+	public function getHighestId()
+	{
+		if (file_exists(ROOT_PATH . "/data/lecturer.txt")) {
+			$rows = file(ROOT_PATH . "/data/lecturer.txt");
+		} else {
+			new Error("lecturer.txt does not exist");
+			return 0;
+		}
+
+		$last_row = array_pop($rows);
+		$data = str_getcsv($last_row);
+
+		if($data[0] == 'id'){
+			return 0;
+		}
+
+		return $data[0];
+	}
+
+	/**
 	 * Returns a lecturerobject with a certain id
 	 * @param $id
 	 * @return mixed|null

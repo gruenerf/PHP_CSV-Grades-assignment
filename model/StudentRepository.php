@@ -43,6 +43,30 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 		return new Student($name, $surname, $birthday);
 	}
 
+
+	/**
+	 * Returns the highest id of the csv file
+	 * @return int
+	 */
+	public function getHighestId()
+	{
+		if (file_exists(ROOT_PATH . "/data/student.txt")) {
+			$rows = file(ROOT_PATH . "/data/student.txt");
+		} else {
+			new Error("student.txt does not exist");
+			return 0;
+		}
+
+		$last_row = array_pop($rows);
+		$data = str_getcsv($last_row);
+
+		if($data[0] == 'id'){
+			return 0;
+		}
+
+		return $data[0];
+	}
+
 	/**
 	 * Returns a studentObject with a certain id
 	 * @param $id
@@ -300,6 +324,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 			$a = fgetcsv($fh);
 
 			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[0] == $student->getId() && $a[1] == $course->getId()) {
+				fclose($fh);
 				return true;
 			}
 		};

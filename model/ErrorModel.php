@@ -78,11 +78,17 @@ class ErrorModel implements ErrorModelInterface
 			fputcsv($fh, array('id', 'date', 'message'));
 		}
 
+		// Only raise counter if $counterCheck = NULL that means the object is saved the first time
+		// Prevents problems with update function
+		$counterCheck = $this->getId();
+
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return $_SESSION['errorId']++;
+		if (!$counterCheck) {
+			return $_SESSION['errorId'];
+		}
 	}
 
 	// Not needed for Errors because its just a log
@@ -100,10 +106,10 @@ class ErrorModel implements ErrorModelInterface
 	{
 		if ($this->getId() === null) {
 			if (isset($_SESSION['errorId'])) {
-				$id = $_SESSION['errorId'];
+				$id = ++$_SESSION['errorId'];
 			} else {
-				$_SESSION['errorId'] = 1;
-				$id = $_SESSION['errorId'];
+				$_SESSION['errorId'] = ErrorRepository::getInstance()->getHighestId();
+				$id = ++$_SESSION['errorId'];
 			}
 		} else {
 			$id = $this->getId();

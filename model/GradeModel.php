@@ -67,11 +67,13 @@ class GradeModel implements GradeModelInterface
 		$this->studentId = $studentId;
 	}
 
-	public function getDate(){
+	public function getDate()
+	{
 		return $this->date;
 	}
 
-	public function setDate(DateTime $date){
+	public function setDate(DateTime $date)
+	{
 		$this->date = $date;
 	}
 
@@ -115,11 +117,17 @@ class GradeModel implements GradeModelInterface
 			fputcsv($fh, array('id', 'studentId', 'courseId', 'grade', 'courseSemester', 'date'));
 		}
 
+		// Only raise counter if $counterCheck = NULL that means the object is saved the first time
+		// Prevents problems with update function
+		$counterCheck = $this->getId();
+
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return $_SESSION['gradeId']++;
+		if (!$counterCheck) {
+			return $_SESSION['gradeId'];
+		}
 	}
 
 	/**
@@ -154,10 +162,10 @@ class GradeModel implements GradeModelInterface
 	{
 		if ($this->getId() === NULL) {
 			if (isset($_SESSION['gradeId'])) {
-				$id = $_SESSION['gradeId'];
+				$id = ++$_SESSION['gradeId'];
 			} else {
-				$_SESSION['gradeId'] = 1;
-				$id = $_SESSION['gradeId'];
+				$_SESSION['gradeId'] = GradeRepository::getInstance()->getHighestId();
+				$id = ++$_SESSION['gradeId'];
 			}
 		} else {
 			$id = $this->getId();

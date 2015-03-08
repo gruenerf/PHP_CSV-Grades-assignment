@@ -45,6 +45,29 @@ class GradeRepository extends BaseRepository implements GradeRepositoryInterface
 	}
 
 	/**
+	 * Returns the highest id of the csv file
+	 * @return int
+	 */
+	public function getHighestId()
+	{
+		if (file_exists(ROOT_PATH . "/data/grade.txt")) {
+			$rows = file(ROOT_PATH . "/data/grade.txt");
+		} else {
+			new Error("grade.txt does not exist");
+			return 0;
+		}
+
+		$last_row = array_pop($rows);
+		$data = str_getcsv($last_row);
+
+		if($data[0] == 'id'){
+			return 0;
+		}
+
+		return $data[0];
+	}
+
+	/**
 	 * Returns a grade object with a certain id
 	 * @param $id
 	 * @return mixed|null

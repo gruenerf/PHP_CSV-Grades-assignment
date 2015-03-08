@@ -5,7 +5,7 @@ use GradeModel as Grade;
 /**
  * Class GradeController
  */
-class GradeController
+class GradeController implements GradeControllerInterface
 {
 	/**
 	 * @var GradeRepositoryInterface

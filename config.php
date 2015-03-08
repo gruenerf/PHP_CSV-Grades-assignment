@@ -1,12 +1,20 @@
 <?php
 
 // Start Session
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
 
 // Define Root Path
 define('ROOT_PATH', realpath(__DIR__));
 
 // Include all classes
+
+// Include all classes
+foreach (glob(ROOT_PATH . "/controller/interface/*.php") as $filename) {
+	require_once($filename);
+}
+
 foreach (glob(ROOT_PATH . "/controller/*.php") as $filename) {
 	require_once($filename);
 }
@@ -40,3 +48,4 @@ $gradeController = new GradeController(GradeRepository::getInstance());
 $courseController = new CourseController(CourseRepository::getInstance());
 $lecturerController = new LecturerController(LecturerRepository::getInstance());
 $studentController = new StudentController(StudentRepository::getInstance());
+$validatorController = new ValidatorController($errorController, $gradeController);

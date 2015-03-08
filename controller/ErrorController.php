@@ -3,7 +3,7 @@
 /**
  * Class ErrorController
  */
-class ErrorController {
+class ErrorController implements ErrorControllerInterface{
 	/**
 	 * @var ErrorRepositoryInterface
 	 */

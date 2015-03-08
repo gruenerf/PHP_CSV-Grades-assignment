@@ -118,11 +118,17 @@ class CourseModel implements CourseModelInterface
 			fputcsv($fh, array('id', 'name', 'ects', 'group', 'semester'));
 		}
 
+		// Only raise counter if $counterCheck = NULL that means the object is saved the first time
+		// Prevents problems with update function
+		$counterCheck = $this->getId();
+
 		fputcsv($fh, $this->toArray());
 
 		fclose($fh);
 
-		return $_SESSION['courseId']++;
+		if(!$counterCheck){
+			return $_SESSION['courseId']++;
+		}
 	}
 
 	/**
@@ -157,10 +163,10 @@ class CourseModel implements CourseModelInterface
 	{
 		if ($this->getId() === NULL) {
 			if (isset($_SESSION['courseId'])) {
-				$id = $_SESSION['courseId'];
+				$id = ++$_SESSION['courseId'];
 			} else {
-				$_SESSION['courseId'] = 1;
-				$id = $_SESSION['courseId'];
+				$_SESSION['courseId'] = CourseRepository::getInstance()->getHighestId();
+				$id = ++$_SESSION['courseId'];
 			}
 		} else {
 			$id = $this->getId();
