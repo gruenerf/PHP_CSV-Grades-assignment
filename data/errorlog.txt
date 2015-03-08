@@ -1,1 +1,7 @@
 id,date,message
+1,"2015-03-08 14:08:02","Student with id=1 has not been registered for course with id=2."
+2,"2015-03-08 14:08:02","grade.txt does not exist"
+3,"2015-03-08 14:08:02","Student with id=3 has not been registered for course with id=3."
+4,"2015-03-08 14:08:02","Student with id=5 has not been registered for course with id=5."
+5,"2015-03-08 14:08:02","Student with id=3 has not been registered for course with id=4."
+6,"2015-03-08 14:08:02","Student with id=5 has not been registered for course with id=2."

@@ -50,7 +50,7 @@ class ErrorModel implements ErrorModelInterface
 	 * @param int $id
 	 * @param bool $save
 	 */
-	function __construct($errormessage, $date = NULL, $id = 0, $save = true)
+	function __construct($errormessage, $date = NULL, $id = NULL, $save = true)
 	{
 		if (isset($date)) {
 			$this->date = $date;

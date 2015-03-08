@@ -20,7 +20,7 @@ interface GradeControllerInterface
 	 * @param GradeModel $grade
 	 * @return mixed
 	 */
-	public function update(Grade $grade);
+	public function update($grade);
 
 	/**
 	 * @param $id

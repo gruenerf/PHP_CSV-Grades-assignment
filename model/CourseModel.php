@@ -127,7 +127,7 @@ class CourseModel implements CourseModelInterface
 		fclose($fh);
 
 		if(!$counterCheck){
-			return $_SESSION['courseId']++;
+			return $_SESSION['courseId'];
 		}
 	}
 

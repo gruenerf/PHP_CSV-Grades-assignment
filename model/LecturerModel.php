@@ -87,7 +87,7 @@ class LecturerModel implements LecturerModelInterface
 	 * @param null $id
 	 * @param bool $save
 	 */
-	public function __construct($title, $name, $surname, $birthday, $workload = "undefined", $id = NULL, $save = true)
+	public function __construct($title='', $name, $surname, $birthday, $workload = "undefined", $id = NULL, $save = true)
 	{
 		$this->title = $title;
 		$this->name = $name;

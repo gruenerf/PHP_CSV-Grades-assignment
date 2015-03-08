@@ -8,7 +8,7 @@
 	// When pressed submit
 	if (isset($_POST["submit"])) {
 
-		$notifications = $validatorController->check();
+		$notifications = $validatorController->checkUpdate();
 
 		// Print out all notifications
 		foreach ($notifications as $notification) {

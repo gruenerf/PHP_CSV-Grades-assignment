@@ -324,7 +324,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 			$a = fgetcsv($fh);
 
 			if ($a[0] !== '' && $a[0] !== 'id' && $a[0] !== null && $a[0] == $student->getId() && $a[1] == $course->getId()) {
-				fclose($fh);
+
 				return true;
 			}
 		};

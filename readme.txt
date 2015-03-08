@@ -37,8 +37,8 @@ The arrow pointing down does the exact opposite and sorts the table descending r
 
 The structure of the uploadable csv file consists of four properties per row (of course all separated by a comma).
 
-The first value is the studentId,
-the second one the courseId,
+The first value is the studentId (you can find the student id under the people page),
+the second one the courseId (you can find out a course id by looking in the data folder in the grade.txt -> its the first value),
 the third one is the grade (A-F)
 and the fourth one is the date the exam was taken or the grade was earned 
 Format: Y-m-d  example: 2015-09-08

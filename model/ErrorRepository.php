@@ -30,13 +30,21 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 	}
 
 	/**
-	 * Creates one error object
+	 * Creates one or many error objects
 	 * @param $errormessage
-	 * @return ErrorModel|mixed
+	 * @return array|ErrorModel|mixed
 	 */
 	public function create($errormessage)
 	{
-		return new Error($errormessage);
+		if (is_array($errormessage)) {
+			$error_array = array();
+			foreach ($errormessage as $error) {
+				array_push($error_array, new Error($error));
+			}
+			return ($error_array);
+		} else {
+			return new Error($errormessage);
+		}
 	}
 
 	/**
@@ -45,17 +53,17 @@ class ErrorRepository extends BaseRepository implements ErrorRepositoryInterface
 	 */
 	public function getHighestId()
 	{
-		if (file_exists(ROOT_PATH . "/data/error.txt")) {
-			$rows = file(ROOT_PATH . "/data/error.txt");
+		if (file_exists(ROOT_PATH . "/data/errorlog.txt")) {
+			$rows = file(ROOT_PATH . "/data/errorlog.txt");
 		} else {
-			new Error("error.txt does not exist");
+			new Error("errorlog.txt does not exist");
 			return 0;
 		}
 
 		$last_row = array_pop($rows);
 		$data = str_getcsv($last_row);
 
-		if ($data[0] == 'id') {
+		if($data[0] == 'id'){
 			return 0;
 		}
 

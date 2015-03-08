@@ -41,35 +41,9 @@
 	</thead>
 	<tbody>
 	<?php
+	$attrdir = $validatorController->checkGradeSort();
 
-	$attr = null;
-	$dir = null;
-
-	/**
-	 * Validation
-	 */
-	$attrArray = array(
-		'title', 'group', 'name', 'surname', 'semester', 'date', 'grade'
-	);
-
-	$dirArray = array(
-		'asc', 'desc'
-	);
-
-	// Check if parameter are valid
-	if (isset($_GET['attr']) & isset($_GET['dir'])) {
-		if (in_array($_GET['attr'], $attrArray) & in_array($_GET['dir'], $dirArray)) {
-			$attr = $_GET['attr'];
-			$dir = $_GET['dir'];
-		} else {
-			header("#"); // Redirect browser
-		}
-	} else {
-		header("#"); // Redirect browser
-	}
-
-
-	foreach ($gradeController->getAllSorted($attr, $dir) as $grade): ?>
+	foreach ($gradeController->getAllSorted($attrdir[0], $attrdir[1]) as $grade): ?>
 		<tr>
 			<td>
 				<?= $grade['title']; ?>

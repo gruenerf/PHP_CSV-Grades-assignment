@@ -36,9 +36,11 @@ class GradeController implements GradeControllerInterface
 	 * @param GradeModel $grade
 	 * @return mixed
 	 */
-	function update(Grade $grade)
+	function update($grade)
 	{
-		return $this->gradeRepository->update($grade);
+		if($grade instanceof Grade){
+			return $this->gradeRepository->update($grade);
+		}
 	}
 
 	/**

@@ -4,6 +4,7 @@
 <table>
 	<thead>
 	<tr>
+		<td>id</td>
 		<td>title</td>
 		<td>name</td>
 		<td>surname</td>
@@ -17,6 +18,9 @@
 	<?php
 	foreach ($lecturerController->getAll() as $lecturer): ?>
 		<tr>
+			<td>
+				<?= $lecturer->getId(); ?>
+			</td>
 			<td>
 				<?= $lecturer->getTitle(); ?>
 			</td>
@@ -47,6 +51,7 @@
 <table>
 	<thead>
 	<tr>
+		<td>id</td>
 		<td>name</td>
 		<td>surname</td>
 		<td>birthday</td>
@@ -60,6 +65,9 @@
 	<tbody><?php
 	foreach ($studentController->getAll() as $student): ?>
 		<tr>
+			<td>
+				<?= $student->getId(); ?>
+			</td>
 			<td>
 				<?= $student->getName(); ?>
 			</td>

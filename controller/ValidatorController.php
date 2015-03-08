@@ -23,7 +23,7 @@ class ValidatorController
 	/**
 	 * @return mixed
 	 */
-	public function check()
+	public function checkUpdate()
 	{
 		$notifications = array();
 
@@ -96,7 +96,33 @@ class ValidatorController
 			array_push($notifications, $this->errorController->create('No File uploaded.')->getErrormessage());
 		}
 
-		return $notification;
+		return $notifications;
+	}
+
+	function checkGradeSort()
+	{
+		/**
+		 * Validation
+		 */
+		$attrArray = array(
+			'title', 'group', 'name', 'surname', 'semester', 'date', 'grade'
+		);
+
+		$dirArray = array(
+			'asc', 'desc'
+		);
+
+		// Check if parameter are valid
+		if (isset($_GET['attr']) & isset($_GET['dir'])) {
+			if (in_array($_GET['attr'], $attrArray) & in_array($_GET['dir'], $dirArray)) {
+				return array($_GET['attr'], $_GET['dir']);
+			} else {
+				$this->errorController->create('Used wrong parameters for grade sorting');
+				header("#"); // Redirect browser
+			}
+		} else {
+			header("#"); // Redirect browser
+		}
 	}
 
 }
